@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 
-import org.apache.catalina.startup.ClassLoaderFactory.Repository;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,13 +25,13 @@ public class UserController {
     @GetMapping("/users")
 	public String index(Model model) {
 		model.addAttribute("users", userRepository.findAll());
-		return "index";
+		return "user/index";
 	}
 
 	@GetMapping("/users/{id}")
 	public String show(Model model, @PathVariable("id") long id) {
 		model.addAttribute("user", userRepository.findOne(id));
-		return "show";
+		return "user/show";
 	}
 
 	@GetMapping("/users/new")
@@ -45,7 +43,7 @@ public class UserController {
 	@GetMapping("/users/{id}/edit")
 	public String edit(Model model, @PathVariable("id") long id) {
 		model.addAttribute("user", userRepository.findOne(id));
-		return "edit";
+		return "user/edit";
 	}
 
 	@PostMapping("/users")
