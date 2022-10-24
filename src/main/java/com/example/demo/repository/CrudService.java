@@ -6,10 +6,12 @@ import java.util.Map;
 public class CrudService {
 
     private static final String URL = "jdbc:mysql://localhost/test";
+    private static final String USERNAME = System.getenv("DB_USERNAME");
+    private static final String PASSWORD = System.getenv("DB_PASSWORD");
 
     private static Connection createConnection() throws SQLException
     {
-        return DriverManager.getConnection(URL);
+        return DriverManager.getConnection(URL, USERNAME, PASSWORD);
     }
 
     public static PreparedStatement prepareStatement(String sql) throws SQLException {
