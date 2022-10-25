@@ -11,7 +11,6 @@ public class User {
     private LocalDateTime updatedAt;
 
     public User() {
-
     }
 
     public User(long id, String email, LocalDateTime createdAt, LocalDateTime updatedAt) {

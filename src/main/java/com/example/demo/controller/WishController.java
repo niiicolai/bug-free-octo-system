@@ -22,5 +22,60 @@ public class WishController {
 		this.wishRepository = wishRepository;
 	}
     
+	@GetMapping("/wishes")
+	public String index(Model model) {
+		model.addAttribute("wishes", wishRepository.findAll());
+		return "wish/index";
+	}
+
+	@GetMapping("/wishes/{id}")
+	public String show(Model model, @PathVariable("id") long id) {
+		model.addAttribute("wish", wishRepository.findOne(id));
+		return "wish/show";
+	}
+
+	@GetMapping("/wishes/new")
+	public String instantiate(Model model) {
+		model.addAttribute("wish", wishRepository.instantiate());
+		return "wish/new";
+	}
+
+	@GetMapping("/wishes/{id}/edit")
+	public String edit(Model model, @PathVariable("id") long id) {
+		model.addAttribute("wish", wishRepository.findOne(id));
+		return "wish/edit";
+	}
+
+	@PostMapping("/wishes")
+	public String create(Model model, Wish wish, RedirectAttributes redirectAttributes) {
+		try {
+			wish = wishRepository.save(wish);
+			return "redirect:wishes/" + wish.getId();
+		} catch (Exception e) {
+			redirectAttributes.addAttribute("error", e.getCause());
+			return "redirect:wishes/new";
+		}
+	}
+
+	@PatchMapping("/wishes")
+	public String update(Model model, Wish wish, RedirectAttributes redirectAttributes) {
+		try {
+			wishRepository.save(wish);
+			return "redirect:wishes/" + wish.getId();
+		} catch (Exception e) {
+			redirectAttributes.addAttribute("error", e.getCause());
+			return "redirect:wishes/"  + wish.getId() + "/edit";
+		}		
+	}
 	
+	@DeleteMapping("/wishes")
+	public String delete(Model model, Wish wish, RedirectAttributes redirectAttributes) {
+		try {
+			wishRepository.delete(wish.getId());
+		} catch (Exception e) {
+			redirectAttributes.addAttribute("error", e.getCause());
+		}
+
+		return "redirect:wishes";
+	}
 }

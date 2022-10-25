@@ -7,7 +7,7 @@
         <h1>Show</h1>
         <a th:href="@{/users}">All</a> |
         <a th:href="@{/users/{id}/edit(id=${user.getId()})}">Edit</a> |
-
+        <a href="#">New wishlist</a>
         <form action="#" th:action="@{/users}" th:object="${user}" th:method="delete" style="display:inline;">
             <input type="hidden" name="id" th:value="${user.getId()}" />
             <button type="submit" style="background:none;border:none;text-decoration:underline;color:#0d6efd;padding:0;">Delete</button>

@@ -11,7 +11,6 @@ public class Wishlist {
     private LocalDateTime updatedAt;
 
     public Wishlist() {
-        
     }
 
     public Wishlist(long id, String title, LocalDateTime createdAt, LocalDateTime updatedAt) {

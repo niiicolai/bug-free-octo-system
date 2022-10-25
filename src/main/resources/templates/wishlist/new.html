@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <h1>New Wishlist</h1>
+        <a th:href="@{/wishlists}">All</a>
+        <form action="#" th:action="@{/wishlists}" th:object="${wishlist}" method="post">
+            <p>Title: <input type="text" name="title" /></p>
+            <p><input type="submit" value="Submit" />
+        </form>
+    </body>
+</html>

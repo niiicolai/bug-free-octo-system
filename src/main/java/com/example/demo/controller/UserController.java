@@ -5,8 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.ui.Model;
 
@@ -22,7 +23,7 @@ public class UserController {
 		this.userRepository = userRepository;
 	}
 
-    @GetMapping("/users")
+	@RequestMapping(value = {"/users", "/"}, method = RequestMethod.GET)
 	public String index(Model model) {
 		model.addAttribute("users", userRepository.findAll());
 		return "user/index";
@@ -53,14 +54,12 @@ public class UserController {
 			return "redirect:users/" + user.getId();
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getCause());
-			return "redirect:instantiate";
+			return "redirect:users/new";
 		}
 	}
 
 	@PatchMapping("/users")
 	public String update(Model model, User user, RedirectAttributes redirectAttributes) {
-		redirectAttributes.addAttribute("id", user.getId());
-		
 		try {
 			userRepository.save(user);
 			return "redirect:users/" + user.getId();

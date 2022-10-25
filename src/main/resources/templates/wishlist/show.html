@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <h1>Show</h1>
+        <a th:href="@{/wishlists}">All</a> |
+        <a th:href="@{/wishlists/{id}/edit(id=${wishlist.getId()})}">Edit</a> |
+        <a href="#">New wishlist</a>
+        <form action="#" th:action="@{/wishlists}" th:object="${wishlist}" th:method="delete" style="display:inline;">
+            <input type="hidden" name="id" th:value="${wishlist.getId()}" />
+            <button type="submit" style="background:none;border:none;text-decoration:underline;color:#0d6efd;padding:0;">Delete</button>
+        </form>
+        <div>
+            <p>Title:</p>
+            <p th:text="${wishlist.getTitle()}"></p>
+        </div>
+
+        
+    </body>
+</html>

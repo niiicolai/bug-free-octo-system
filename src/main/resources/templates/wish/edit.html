@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <h1>Edit Wish</h1>
+        <a th:href="@{/wishes}">All</a> |
+        <a th:href="@{/wishes/{id}(id=${wish.getId()})}">Show</a>
+        <form action="#" th:action="@{/wishes}" th:object="${wish}" th:method="patch">
+            <input type="hidden" name="id" th:value="${wish.getId()}"
+            <p>Content: <input type="text" name="content" th:value="${wish.getContent()}" /></p>
+            <p><input type="submit" value="Submit" />
+        </form>
+    </body>
+</html>

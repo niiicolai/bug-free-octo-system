@@ -11,7 +11,6 @@ public class Wish {
     private LocalDateTime updatedAt;
 
     public Wish() {
-        
     }
 
     public Wish(long id, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {

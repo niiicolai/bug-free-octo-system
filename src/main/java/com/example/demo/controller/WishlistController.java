@@ -22,5 +22,60 @@ public class WishlistController {
 		this.wishlistRepository = wishlistRepository;
 	}
 
-    
+    @GetMapping("/wishlists")
+	public String index(Model model) {
+		model.addAttribute("wishlists", wishlistRepository.findAll());
+		return "wishlist/index";
+	}
+
+	@GetMapping("/wishlists/{id}")
+	public String show(Model model, @PathVariable("id") long id) {
+		model.addAttribute("wishlist", wishlistRepository.findOne(id));
+		return "wishlist/show";
+	}
+
+	@GetMapping("/wishlists/new")
+	public String instantiate(Model model) {
+		model.addAttribute("wishlist", wishlistRepository.instantiate());
+		return "wishlist/new";
+	}
+
+	@GetMapping("/wishlists/{id}/edit")
+	public String edit(Model model, @PathVariable("id") long id) {
+		model.addAttribute("wishlist", wishlistRepository.findOne(id));
+		return "wishlist/edit";
+	}
+
+	@PostMapping("/wishlists")
+	public String create(Model model, Wishlist wishlist, RedirectAttributes redirectAttributes) {
+		try {
+			wishlist = wishlistRepository.save(wishlist);
+			return "redirect:wishlists/" + wishlist.getId();
+		} catch (Exception e) {
+			redirectAttributes.addAttribute("error", e.getCause());
+			return "redirect:wishlists/new";
+		}
+	}
+
+	@PatchMapping("/wishlists")
+	public String update(Model model, Wishlist wishlist, RedirectAttributes redirectAttributes) {
+		try {
+			wishlistRepository.save(wishlist);
+			return "redirect:wishlists/" + wishlist.getId();
+		} catch (Exception e) {
+			redirectAttributes.addAttribute("error", e.getCause());
+			return "redirect:wishlists/" + wishlist.getId() + "/edit";
+		}		
+	}
+	
+	@DeleteMapping("/wishlists")
+	public String delete(Model model, Wishlist wishlist, RedirectAttributes redirectAttributes) {
+		try {
+			wishlistRepository.delete(wishlist.getId());
+		} catch (Exception e) {
+			redirectAttributes.addAttribute("error", e.getCause());
+		}
+
+		return "redirect:wishlists";
+	}
 }
