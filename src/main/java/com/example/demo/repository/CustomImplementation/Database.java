@@ -81,19 +81,16 @@ public class Database {
      * and the optional exclude parameter.
      */
     public static void executeUpdate(String sql, Map<String, Object> properties, List<String> exclude) {
-        System.out.println("executeUpdate");
         try {
             Connection connection = createConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             setStatementValues(preparedStatement, properties, exclude);
-            System.out.print(preparedStatement);
             preparedStatement.executeUpdate();
             preparedStatement.close();
             connection.close();
 
         } catch (SQLException e) {
             e.getStackTrace();
-            System.out.println(e);
         }
     }
 
