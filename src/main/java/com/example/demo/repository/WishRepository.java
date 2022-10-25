@@ -21,6 +21,7 @@ public class WishRepository extends CrudRepository<Wish> {
     protected Wish instantiate(ResultSet resultSet) throws SQLException {
         Wish wish = instantiate();
         while (resultSet.next()) {
+            wish.setId(resultSet.getLong("id"));
             wish.setContent(resultSet.getString("content"));
         }
         return wish;
@@ -30,7 +31,9 @@ public class WishRepository extends CrudRepository<Wish> {
     protected Iterable<Wish> instantiateCollection(ResultSet resultSet) throws SQLException {
         LinkedList<Wish> collection = new LinkedList<Wish>();
         while (resultSet.next()) {
-            Wish wish = instantiate(resultSet);
+            Wish wish = new Wish();
+            wish.setId(resultSet.getLong("id"));
+            wish.setContent(resultSet.getString("content"));
             collection.add(wish); 
         }
         return collection;

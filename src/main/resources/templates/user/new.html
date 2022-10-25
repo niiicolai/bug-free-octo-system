@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
-        <div th:replace="user/fragments/form :: form"></div>
+        <h1>New User</h1>
+        <a th:href="@{/users}">All</a>
+        <form action="#" th:action="@{/users}" th:object="${user}" method="post">
+            <p>Email: <input type="text" name="email" /></p>
+            <p><input type="submit" value="Submit" />
+        </form>
     </body>
 </html>

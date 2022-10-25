@@ -47,12 +47,10 @@ public class UserController {
 	}
 
 	@PostMapping("/users")
-	public String create(Model model, @RequestBody User user, RedirectAttributes redirectAttributes) {
-		redirectAttributes.addAttribute("id", user.getId());
-
+	public String create(Model model, User user, RedirectAttributes redirectAttributes) {
 		try {
-			userRepository.save(user);
-			return "redirect:show";
+			user = userRepository.save(user);
+			return "redirect:users/" + user.getId();
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getCause());
 			return "redirect:instantiate";
@@ -60,26 +58,26 @@ public class UserController {
 	}
 
 	@PatchMapping("/users")
-	public String update(Model model, @RequestBody User user, RedirectAttributes redirectAttributes) {
+	public String update(Model model, User user, RedirectAttributes redirectAttributes) {
 		redirectAttributes.addAttribute("id", user.getId());
-
+		
 		try {
 			userRepository.save(user);
-			return "redirect:show";
+			return "redirect:users/" + user.getId();
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getCause());
-			return "redirect:edit";
+			return "redirect:users/"  + user.getId() + "/edit";
 		}		
 	}
 	
 	@DeleteMapping("/users")
-	public String delete(Model model, @RequestBody User user, RedirectAttributes redirectAttributes) {
+	public String delete(Model model, User user, RedirectAttributes redirectAttributes) {
 		try {
 			userRepository.delete(user.getId());
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getCause());
 		}
 
-		return "redirect:index";
+		return "redirect:users";
 	}
 }

@@ -18,12 +18,17 @@ public abstract class CrudRepository<T> {
             long id = (long)values.get("id");
 
             PreparedStatement statement;
-            if (exists(id)) {
+            if (id == 0) {
                 statement = CrudService.prepareCreateStatement(values, table());
+                statement.executeUpdate();
+                
+                id = CrudService.lastInsertId(table());
             } else {
                 statement = CrudService.prepareUpdateStatement(values, table());
+                statement.executeUpdate();
             }
-            statement.executeUpdate();
+            
+            CrudService.closeConnection();
             return findOne(id);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -37,7 +42,9 @@ public abstract class CrudRepository<T> {
             PreparedStatement statement = CrudService.prepareStatement(sql);
             statement.setLong(1, primaryKey);
             ResultSet resultSet = statement.executeQuery();
-            return instantiate(resultSet);
+            T entity = instantiate(resultSet);
+            CrudService.closeConnection();
+            return entity;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -49,7 +56,9 @@ public abstract class CrudRepository<T> {
             String sql = String.format("SELECT * FROM %s", table());
             PreparedStatement statement = CrudService.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
-            return instantiateCollection(resultSet);
+            Iterable<T> collection = instantiateCollection(resultSet);
+            CrudService.closeConnection();
+            return collection;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -66,6 +75,8 @@ public abstract class CrudRepository<T> {
             while(resultSet.next()) 
                 count = resultSet.getLong("count");
 
+            CrudService.closeConnection();
+
             return count;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -79,6 +90,7 @@ public abstract class CrudRepository<T> {
             PreparedStatement statement = CrudService.prepareStatement(sql);
             statement.setLong(1, primaryKey);
             statement.executeUpdate();
+            CrudService.closeConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }

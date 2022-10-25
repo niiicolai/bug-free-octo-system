@@ -21,6 +21,7 @@ public class UserRepository extends CrudRepository<User> {
     protected User instantiate(ResultSet resultSet) throws SQLException {
         User user = instantiate();
         while (resultSet.next()) {
+            user.setId(resultSet.getLong("id"));
             user.setEmail(resultSet.getString("email"));
         }
         return user;
@@ -30,7 +31,9 @@ public class UserRepository extends CrudRepository<User> {
     protected Iterable<User> instantiateCollection(ResultSet resultSet) throws SQLException {
         LinkedList<User> collection = new LinkedList<User>();
         while (resultSet.next()) {
-            User user = instantiate(resultSet);
+            User user = new User();
+            user.setId(resultSet.getLong("id"));
+            user.setEmail(resultSet.getString("email"));
             collection.add(user); 
         }
         return collection;

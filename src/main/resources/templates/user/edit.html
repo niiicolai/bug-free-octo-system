@@ -1,8 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
-        <div th:replace="user/fragments/form :: form"></div>
+        <h1>Edit User</h1>
+        <a th:href="@{/users}">All</a> |
+        <a th:href="@{/users/{id}(id=${user.getId()})}">Show</a>
+        <form action="#" th:action="@{/users}" th:object="${user}" th:method="patch">
+            <input type="hidden" name="id" th:value="${user.getId()}"
+            <p>Email: <input type="text" name="email" th:value="${user.getEmail()}" /></p>
+            <p><input type="submit" value="Submit" />
+        </form>
     </body>
 </html>

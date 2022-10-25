@@ -1,5 +1,5 @@
-<div layout:fragment="user_form">
-    <form>
+<div layout:fragment="user_form(action, method)" xmlns:th="http://www.thymeleaf.org">
+    <form action="@{action}" method="@{method}">
 
         <div>
             <label name="email"></label>
