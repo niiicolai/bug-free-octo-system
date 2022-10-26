@@ -7,19 +7,31 @@
     </head>
     <body>
         <div layout:fragment="content">
-            <h1>Wishlist</h1>
-        
-            <a th:href="@{/users/{id}(id=${wishlist.getUserId()})}" class="btn btn-primary">User</a>
-            <a th:href="@{/wishlists/{id}/edit(id=${wishlist.getId()})}" class="btn btn-primary">Edit</a>
-            <div th:replace="wishlist/fragments/delete.html :: delete(${wishlist})"></div>
-            
-            <hr>
+            <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
+                <div>
+                    <small class="text-muted">Wishlist title</small><br>
+                    <strong th:text="${wishlist.getTitle()}" class="mb-0 mt-0" />
+                </div>
+                <div class="d-flex gap-2">
+                    <a th:href="@{/wishes/new(wishlist_id=${wishlist.getId()})}" class="btn btn-outline-primary btn-sm">
+                        <i class="fa-solid fa-plus"></i>
+                        <i class="fa-solid fa-gift"></i>
+                    </a>
 
-            <div th:replace="wishlist/fragments/entity.html :: entity"></div>
+                    <div class="vr"></div>
 
-            <hr>
+                    <a th:href="@{/users/{id}(id=${wishlist.getUserId()})}" class="btn btn-outline-primary btn-sm">
+                        <i class="fa-solid fa-user"></i>
+                    </a>
+                    
+                    <a th:href="@{/wishlists/{id}/edit(id=${wishlist.getId()})}" class="btn btn-outline-primary btn-sm">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
 
-            <a th:href="@{/wishes/new(wishlist_id=${wishlist.getId()})}" class="btn btn-secondary mb-3">New Wish</a>
+                    <div th:replace="wishlist/fragments/delete.html :: delete(${wishlist})"></div>
+                </div>
+            </div>
+
             <div th:replace="wish/fragments/collection.html :: collection"></div>
         </div>
     </body>

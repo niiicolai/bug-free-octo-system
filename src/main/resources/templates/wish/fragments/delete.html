@@ -2,6 +2,8 @@
     <form action="#" th:action="@{/wishes}" th:object="${entity}" th:method="delete">
         <input type="hidden" name="id" th:value="${entity.getId()}" />
         <input type="hidden" name="wishlistId" th:value="${entity.getWishlistId()}" />
-        <button type="submit" class="btn btn-danger">Delete</button>
+        <button type="submit" class="btn btn-danger btn-sm">
+            <i class="fa-solid fa-trash"></i>
+        </button>
     </form>
 </div>

@@ -1,13 +1,21 @@
-<div th:fragment="form(method)" xmlns:th="http://www.thymeleaf.org">
-    <form action="#" th:action="@{/wishes}" th:object="${wish}" th:method="${method}">
+<div th:fragment="form(method)" 
+     xmlns:th="http://www.thymeleaf.org"
+     class="card">
+
+    <form action="#" th:action="@{/wishes}" th:object="${wish}" th:method="${method}" class="form-control">
         <input type="hidden" name="id" th:value="${wish.getId()}" />
         <input type="hidden" name="wishlistId" th:value="${param.wishlist_id == null ? wish.getWishlistId() : param.wishlist_id}" />
 
-        <div class="form-group">
-            <label name="content">Content</label>
-            <input type="text" name="content" th:value="${wish.getContent()}" class="form-control" />
+        <div class="form-group mt-3">
+            <input type="text" name="content" th:value="${wish.getContent()}" 
+                   class="form-control form-control-lg"
+                   placeholder="I wish a new ..."
+                   autocomplete="off"
+                   required="required" />
         </div>
 
-        <input type="submit" class="btn btn-primary mt-3" value="Submit" />
+        <div class="d-grid mb-3">
+            <input type="submit" class="btn btn-success mt-3" value="Save" />
+        </div>
     </form>
 </div>

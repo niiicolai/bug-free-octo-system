@@ -7,10 +7,7 @@
     </head>
     <body>
         <div layout:fragment="content">
-            <h1>New User</h1>
-
-            <a th:href="@{/users}" class="btn btn-secondary mb-3">All</a>
-        
+            <h1 class="mb-3 mt-3">New User</h1>
             <div th:replace="user/fragments/form.html :: form('post')"></div>
         </div>
     </body>

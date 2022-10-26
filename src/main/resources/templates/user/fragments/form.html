@@ -1,12 +1,20 @@
-<div th:fragment="form(method)" xmlns:th="http://www.thymeleaf.org">
-    <form action="#" th:action="@{/users}" th:object="${user}" th:method="${method}">
+<div th:fragment="form(method)" 
+     xmlns:th="http://www.thymeleaf.org"
+     class="card">
+
+    <form action="#" th:action="@{/users}" th:object="${user}" th:method="${method}" class="form-control">
         <input type="hidden" name="id" th:value="${user.getId()}" />
 
-        <div class="form-group">
-            <label name="email">Email</label>
-            <input type="text" name="email" th:value="${user.getEmail()}" class="form-control" />
+        <div class="form-group mt-3">
+            <input type="email" name="email" th:value="${user.getEmail()}" 
+                   class="form-control form-control-lg"
+                   placeholder="example@mail.com"
+                   autocomplete="off"
+                   required="required" />
         </div>
 
-        <input type="submit" class="btn btn-primary mt-3" value="Submit" />
+        <div class="d-grid mb-3">
+            <input type="submit" class="btn btn-success mt-3" value="Save" />
+        </div>
     </form>
 </div>

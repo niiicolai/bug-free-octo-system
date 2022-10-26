@@ -7,9 +7,11 @@
     </head>
     <body>
         <div layout:fragment="content">
-            <h1>Edit Wishlist</h1>
-        
-            <a th:href="@{/wishlists/{id}(id=${wishlist.getId()})}" class="btn btn-secondary mb-3">Show</a>
+
+            <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
+                <h1 class="mb-0 mt-0">Edit Wishlist</h1>
+                <a th:href="@{/wishlists/{id}(id=${wishlist.getId()})}" class="btn btn-outline-primary btn-sm">Show Wishlist</a>
+            </div>
 
             <div th:replace="wishlist/fragments/form.html :: form('post')"></div>
         </div>
