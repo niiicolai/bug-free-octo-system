@@ -70,6 +70,7 @@ public class Database {
             for (String key : properties.keySet()) {
                 if (!exclude.contains(key)) {
                     statement.setObject(i, properties.get(key));
+                    
                     i++;
                 }
             }
@@ -79,19 +80,25 @@ public class Database {
     /*
      * Call executeUpdate on a prepared statement based on a sql statement, sql properties, 
      * and the optional exclude parameter.
+     * Returns a LinkedList with a Map Collection with the result.
      */
-    public static void executeUpdate(String sql, Map<String, Object> properties, List<String> exclude) {
+    public static DatabaseResponse executeUpdate(String sql, Map<String, Object> properties, List<String> exclude) {
+        DatabaseResponse response = new DatabaseResponse(); 
+
         try {
             Connection connection = createConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             setStatementValues(preparedStatement, properties, exclude);
             preparedStatement.executeUpdate();
             preparedStatement.close();
+            System.out.println(preparedStatement);
             connection.close();
-
         } catch (SQLException e) {
-            e.getStackTrace();
+            response.setResponseCode(ResponseCode.ERROR);
+            response.setMessage(e.getMessage());
         }
+
+        return response;
     }
 
     /*
@@ -99,24 +106,26 @@ public class Database {
      * and the optional exclude parameter.
      * Returns a LinkedList with a Map Collection with the result.
      */
-    public static LinkedList<Map<String, Object>> executeQuery(String sql, Map<String, Object> properties, List<String> exclude) {
-        LinkedList<Map<String, Object>> resultList = new LinkedList<>();        
-        System.out.println("executeQuery");
+    public static DatabaseResponse executeQuery(String sql, Map<String, Object> properties, List<String> exclude) {
+        DatabaseResponse response = new DatabaseResponse(); 
+
         try {
             Connection connection = createConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             setStatementValues(preparedStatement, properties, exclude);
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultList = parseResultSet(resultSet);
-
+            LinkedList<Map<String, Object>> resultList = parseResultSet(resultSet);
+            response.setResultList(resultList);
+            System.out.println(preparedStatement);
             connection.close();
             resultSet.close();
             preparedStatement.close();
 
         } catch (SQLException e) {
-            e.getStackTrace();
+            response.setResponseCode(ResponseCode.ERROR);
+            response.setMessage(e.getMessage());
         }
 
-        return resultList;
+        return response;
     }
 }

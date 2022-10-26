@@ -35,9 +35,9 @@ public class WishlistRepository extends CrudRepository<Wishlist> {
     @Override
     protected Wishlist instantiate(Map<String, Object> result) {
         Wishlist wishlist = instantiate();
-        long id = ((Number)result.get("id")).longValue();
-        wishlist.setId(id);
+        wishlist.setId(((Number)result.get("id")).longValue());
         wishlist.setTitle((String)result.get("title"));
+        wishlist.setUserId(((Number)result.get("user_id")).longValue());
         return wishlist;
     }
 
@@ -63,6 +63,7 @@ public class WishlistRepository extends CrudRepository<Wishlist> {
         HashMap<String, Object> collection = new HashMap<String, Object>();
         collection.put("id", entity.getId());
         collection.put("title", entity.getTitle());
+        collection.put("user_id", entity.getUserId());
         return collection; 
     }
 }

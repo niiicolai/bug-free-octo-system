@@ -1,0 +1,14 @@
+<div th:fragment="collection" xmlns:th="http://www.thymeleaf.org">
+    <ul th:each="wish: ${wishes}" class="list-group">
+        <li class="list-group-item">
+            <div>
+                <span th:text="${wish.getId()}" />
+                <span th:text="${wish.getContent()}" />
+            </div>
+            <div>
+                <a th:href="@{/wishes/{id}/edit(id=${wish.getId()})}" class="btn btn-primary">Edit</a>
+                <div th:replace="wish/fragments/delete.html :: delete(${wish})"></div>
+            </div>
+        </li>
+    </ul>
+</div>

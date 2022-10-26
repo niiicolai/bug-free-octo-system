@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+    layout:decorate="~{fragments/layout/default}">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
-        <h1>Edit User</h1>
-        <a th:href="@{/users}">All</a> |
-        <a th:href="@{/users/{id}(id=${user.getId()})}">Show</a>
-        <form action="#" th:action="@{/users}" th:object="${user}" th:method="patch">
-            <input type="hidden" name="id" th:value="${user.getId()}"
-            <p>Email: <input type="text" name="email" th:value="${user.getEmail()}" /></p>
-            <p><input type="submit" value="Submit" />
-        </form>
+        <div layout:fragment="content">
+            <h1>Edit User</h1>
+        
+            <a th:href="@{/users/{id}(id=${user.getId()})}" class="btn btn-secondary mb-3">Show</a>
+
+            <div th:replace="user/fragments/form.html :: form('patch')"></div>
+        </div>
     </body>
 </html>

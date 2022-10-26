@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+    layout:decorate="~{fragments/layout/default}">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
-        <h1>New Wishlist</h1>
-        <a th:href="@{/wishlists}">All</a>
-        <form action="#" th:action="@{/wishlists}" th:object="${wishlist}" method="post">
-            <p>Title: <input type="text" name="title" /></p>
-            <p><input type="submit" value="Submit" />
-        </form>
+        <div layout:fragment="content">
+            <h1>New Wishlist</h1>
+            <a th:href="@{/users/{id}(id=${param.user_id})}" class="btn btn-secondary mb-3">User</a>
+
+            <div th:replace="wishlist/fragments/form.html :: form('post')"></div>
+        </div>
     </body>
 </html>

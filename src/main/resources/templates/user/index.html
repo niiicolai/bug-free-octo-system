@@ -1,25 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+    layout:decorate="~{fragments/layout/default}">
     <head>
-        <!-- Include Bootstrap -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js" integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous"></script>
     </head>
     <body>
-        <h1>Users</h1>
-        <a th:href="@{/users/new}">New</a>
+        <div layout:fragment="content">
+            <h1>Users</h1>
 
-        <div th:each="user: ${users}">
-            <span th:text="${user.getId()}" />
-            <span th:text="${user.getEmail()}" />
+            <a th:href="@{/users/new}" class="btn btn-secondary mb-3">New User</a>
 
-            <a th:href="@{/users/{id}/edit(id=${user.getId()})}">Edit</a> |
-            <a th:href="@{/users/{id}(id=${user.getId()})}">Show</a> |
-
-            <form action="#" th:action="@{/users}" th:object="${user}" th:method="delete" style="display:inline;">
-                <input type="hidden" name="id" th:value="${user.getId()}" />
-                <button type="submit" style="background:none;border:none;text-decoration:underline;color:#0d6efd;padding:0;">Delete</button>
-            </form>
+            <div th:replace="user/fragments/collection.html :: collection"></div>
         </div>
     </body>
 </html>

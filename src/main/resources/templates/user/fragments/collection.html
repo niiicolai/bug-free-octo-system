@@ -1,0 +1,15 @@
+<div th:fragment="collection" xmlns:th="http://www.thymeleaf.org">
+    <ul th:each="user: ${users}" class="list-group">
+        <li class="list-group-item">
+            <div>
+                <span th:text="${user.getId()}" />
+                <span th:text="${user.getEmail()}" />
+            </div>
+            <div>
+                <a th:href="@{/users/{id}/edit(id=${user.getId()})}" class="btn btn-primary">Edit</a>
+                <a th:href="@{/users/{id}(id=${user.getId()})}" class="btn btn-primary">Show</a>
+                <div th:replace="user/fragments/delete.html :: delete(${user})"></div>
+            </div>
+        </li>
+    </ul>
+</div>

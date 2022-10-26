@@ -11,16 +11,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.ui.Model;
 
+import java.sql.SQLDataException;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.WishlistRepository;
 import com.example.demo.model.User;
 
 @Controller
 public class UserController {
 
 	private UserRepository userRepository;
+	private WishlistRepository wishlistRepository;
 
-	public UserController(UserRepository userRepository) {
+	public UserController(UserRepository userRepository, WishlistRepository wishlistRepository) {
 		this.userRepository = userRepository;
+		this.wishlistRepository = wishlistRepository;
 	}
 
 	@RequestMapping(value = {"/users", "/"}, method = RequestMethod.GET)
@@ -32,6 +36,7 @@ public class UserController {
 	@GetMapping("/users/{id}")
 	public String show(Model model, @PathVariable("id") long id) {
 		model.addAttribute("user", userRepository.findOne(id));
+		model.addAttribute("wishlists", wishlistRepository.findWhere("user_id", id));
 		return "user/show";
 	}
 
@@ -53,7 +58,7 @@ public class UserController {
 			user = userRepository.save(user);
 			return "redirect:users/" + user.getId();
 		} catch (Exception e) {
-			redirectAttributes.addAttribute("error", e.getCause());
+			redirectAttributes.addAttribute("error", e.getMessage());
 			return "redirect:users/new";
 		}
 	}
@@ -64,7 +69,7 @@ public class UserController {
 			userRepository.save(user);
 			return "redirect:users/" + user.getId();
 		} catch (Exception e) {
-			redirectAttributes.addAttribute("error", e.getCause());
+			redirectAttributes.addAttribute("error", e.getMessage());
 			return "redirect:users/"  + user.getId() + "/edit";
 		}		
 	}
@@ -74,7 +79,7 @@ public class UserController {
 		try {
 			userRepository.delete(user.getId());
 		} catch (Exception e) {
-			redirectAttributes.addAttribute("error", e.getCause());
+			redirectAttributes.addAttribute("error", e.getMessage());
 		}
 
 		return "redirect:users";

@@ -38,6 +38,12 @@ public abstract class QueryFormatter {
     public abstract String findAll();
 
     /*
+     * Returns a SQL statement used to return all entities
+     * where a column is equal to a value.
+     */
+    public abstract String findWhere(String column);
+
+    /*
      * Returns a SQL statement used to return the number of all entities.
      */
     public abstract String count();

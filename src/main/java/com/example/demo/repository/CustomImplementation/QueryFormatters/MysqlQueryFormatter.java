@@ -46,6 +46,15 @@ public class MysqlQueryFormatter extends QueryFormatter {
     }
 
     /*
+     * Returns a SQL statement used to return all entities
+     * where a column is equal to a value.
+     */
+    @Override
+    public String findWhere(String column) {
+        return String.format("SELECT * FROM %s WHERE %s = ?", table, column);
+    }
+
+    /*
      * Returns a SQL statement used to return the number of all entities.
      */
     @Override

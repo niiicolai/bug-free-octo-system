@@ -11,26 +11,24 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.ui.Model;
 
 import com.example.demo.repository.WishlistRepository;
+import com.example.demo.repository.WishRepository;
 import com.example.demo.model.Wishlist;
 
 @Controller
 public class WishlistController {
 
 	private WishlistRepository wishlistRepository;
+	private WishRepository wishRepository;
 
-	public WishlistController(WishlistRepository wishlistRepository) {
+	public WishlistController(WishlistRepository wishlistRepository, WishRepository wishRepository) {
 		this.wishlistRepository = wishlistRepository;
-	}
-
-    @GetMapping("/wishlists")
-	public String index(Model model) {
-		model.addAttribute("wishlists", wishlistRepository.findAll());
-		return "wishlist/index";
+		this.wishRepository = wishRepository;
 	}
 
 	@GetMapping("/wishlists/{id}")
 	public String show(Model model, @PathVariable("id") long id) {
 		model.addAttribute("wishlist", wishlistRepository.findOne(id));
+		model.addAttribute("wishes", wishRepository.findWhere("wishlist_id", id));
 		return "wishlist/show";
 	}
 
@@ -52,7 +50,7 @@ public class WishlistController {
 			wishlist = wishlistRepository.save(wishlist);
 			return "redirect:wishlists/" + wishlist.getId();
 		} catch (Exception e) {
-			redirectAttributes.addAttribute("error", e.getCause());
+			redirectAttributes.addAttribute("error", e.getMessage());
 			return "redirect:wishlists/new";
 		}
 	}
@@ -60,10 +58,11 @@ public class WishlistController {
 	@PatchMapping("/wishlists")
 	public String update(Model model, Wishlist wishlist, RedirectAttributes redirectAttributes) {
 		try {
+			System.out.println(wishlist);
 			wishlistRepository.save(wishlist);
 			return "redirect:wishlists/" + wishlist.getId();
 		} catch (Exception e) {
-			redirectAttributes.addAttribute("error", e.getCause());
+			redirectAttributes.addAttribute("error", e.getMessage());
 			return "redirect:wishlists/" + wishlist.getId() + "/edit";
 		}		
 	}
@@ -73,9 +72,9 @@ public class WishlistController {
 		try {
 			wishlistRepository.delete(wishlist.getId());
 		} catch (Exception e) {
-			redirectAttributes.addAttribute("error", e.getCause());
+			redirectAttributes.addAttribute("error", e.getMessage());
 		}
 
-		return "redirect:wishlists";
+		return "redirect:users/" + wishlist.getUserId();
 	}
 }

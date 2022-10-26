@@ -1,0 +1,6 @@
+<div th:fragment="delete(entity)" xmlns:th="http://www.thymeleaf.org" class="d-inline-block">
+    <form action="#" th:action="@{/users}" th:object="${entity}" th:method="delete">
+        <input type="hidden" name="id" th:value="${entity.getId()}" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+</div>

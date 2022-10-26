@@ -58,17 +58,20 @@ public abstract class CrudRepository<T> {
      *      Update an entity by the specified values, 
      *      and returns the updated entity.
      */
-    public T save(T entity) {        
+    public T save(T entity) throws Exception {        
         Map<String, Object> properties = properties(entity);
         long id = (long)properties.get("id");
 
         if (id == 0) {
-            String sql = queryFormatter.insert(properties);            
-            Database.executeUpdate(sql, properties, QueryFormatter.exclude("id"));
+            String sql = queryFormatter.insert(properties);                                    
+            DatabaseResponse response = Database.executeUpdate(sql, properties, QueryFormatter.exclude("id"));
+            if (response.error()) throw new Exception(response.getMessage());
             return last();
         } else {
             String sql = queryFormatter.update(properties, id);
-            Database.executeUpdate(sql, properties, QueryFormatter.exclude("id"));
+            DatabaseResponse response = Database.executeUpdate(sql, properties, QueryFormatter.exclude("id"));
+            if (response.error()) throw new Exception(response.getMessage());
+
             return findOne(id);
         }
     }
@@ -80,8 +83,8 @@ public abstract class CrudRepository<T> {
     public T findOne(long primaryKey) {
         Map<String, Object> properties = QueryFormatter.property("id", primaryKey);
         String sql = queryFormatter.findOne();
-        LinkedList<Map<String, Object>> resultList = Database.executeQuery(sql, properties, null);
-        return instantiate(resultList.getFirst());
+        DatabaseResponse response = Database.executeQuery(sql, properties, null);
+        return instantiate(response.getResultList().getFirst());
     }
 
     /*
@@ -89,8 +92,18 @@ public abstract class CrudRepository<T> {
      */
     public Iterable<T> findAll() {
         String sql = queryFormatter.findAll();
-        LinkedList<Map<String, Object>> resultList = Database.executeQuery(sql, null, null);
-        return instantiateCollection(resultList);
+        DatabaseResponse response = Database.executeQuery(sql, null, null);
+        return instantiateCollection(response.getResultList());
+    }
+
+    /*
+     * Returns all entities by where clause. 
+     */
+    public Iterable<T> findWhere(String column, Object value) {
+        Map<String, Object> properties = QueryFormatter.property(column, value);
+        String sql = queryFormatter.findWhere(column);
+        DatabaseResponse response = Database.executeQuery(sql, properties, null);        
+        return instantiateCollection(response.getResultList());
     }
 
     /*
@@ -98,18 +111,19 @@ public abstract class CrudRepository<T> {
      */
     public Long count() {
         String sql = queryFormatter.count();
-        LinkedList<Map<String, Object>> resultList = Database.executeQuery(sql, null, null);
-        return (long)resultList.getFirst().get("count");
+        DatabaseResponse response = Database.executeQuery(sql, null, null);
+        return (long)response.getResultList().getFirst().get("count");
     }
 
     /*
      * Delete an entity with the 
      * specified primary key. 
      */
-    public void delete(long primaryKey) {
+    public void delete(long primaryKey) throws Exception {
         Map<String, Object> properties = QueryFormatter.property("id", primaryKey);
         String sql = queryFormatter.delete();
-        Database.executeUpdate(sql, properties, null);
+        DatabaseResponse response = Database.executeUpdate(sql, properties, null);
+        if (response.error()) throw new Exception(response.getMessage());
     }
 
     /*
@@ -125,7 +139,7 @@ public abstract class CrudRepository<T> {
      */
     public T last() {
         String sql = queryFormatter.last();
-        LinkedList<Map<String, Object>> resultList = Database.executeQuery(sql, null, null);        
-        return instantiate(resultList.getFirst());
+        DatabaseResponse response = Database.executeQuery(sql, null, null);
+        return instantiate(response.getResultList().getFirst());
     }
 }

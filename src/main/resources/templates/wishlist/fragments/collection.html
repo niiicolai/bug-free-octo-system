@@ -1,0 +1,15 @@
+<div th:fragment="collection" xmlns:th="http://www.thymeleaf.org">
+    <ul th:each="wishlist: ${wishlists}" class="list-group">
+        <li class="list-group-item">
+            <div>
+                <span th:text="${wishlist.getId()}" />
+                <span th:text="${wishlist.getTitle()}" />
+            </div>
+            <div>
+                <a th:href="@{/wishlists/{id}(id=${wishlist.getId()})}" class="btn btn-primary">Show</a>
+                <a th:href="@{/wishlists/{id}/edit(id=${wishlist.getId()})}" class="btn btn-primary">Edit</a>
+                <div th:replace="wishlist/fragments/delete.html :: delete(${wishlist})"></div>
+            </div>
+        </li>
+    </ul>
+</div>

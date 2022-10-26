@@ -5,23 +5,27 @@ import java.time.LocalDateTime;
 public class Wish {
     
     private long id;
+    private long wishlistId;
     private String content;
-    
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public Wish() {
     }
 
-    public Wish(long id, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Wish(long id, long wishlistId, String content) {
         this.id = id;
         this.content = content;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
     public long getId() {
         return this.id;
+    }
+
+    public void setWishlistId(long wishlistId) {
+        this.wishlistId = wishlistId;
+    }
+
+    public long getWishlistId() {
+        return this.wishlistId;
     }
 
     public void setId(long id) {
@@ -34,13 +38,5 @@ public class Wish {
 
     public String getContent() {
         return this.content;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return this.createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return this.updatedAt;
     }
 }
