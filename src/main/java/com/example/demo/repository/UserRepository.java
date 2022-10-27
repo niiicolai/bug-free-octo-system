@@ -16,7 +16,7 @@ public class UserRepository extends CrudRepository<User> {
         /*
          * Specify the user table.
          */
-        super("Users");
+        super("Users", "id", false);
     }
 
     /*

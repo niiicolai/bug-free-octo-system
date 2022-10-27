@@ -7,13 +7,15 @@ public class Wish {
     private long id;
     private long wishlistId;
     private String content;
+    private String reservedBy;
 
     public Wish() {
     }
 
-    public Wish(long id, long wishlistId, String content) {
+    public Wish(long id, long wishlistId, String content, String reservedBy) {
         this.id = id;
         this.content = content;
+        this.reservedBy = reservedBy;
     }
 
     public long getId() {
@@ -38,5 +40,13 @@ public class Wish {
 
     public String getContent() {
         return this.content;
+    }
+
+    public void setReservedBy(String reservedBy) {
+        this.reservedBy = reservedBy;
+    }
+
+    public String getReservedBy() {
+        return this.reservedBy;
     }
 }

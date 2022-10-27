@@ -12,23 +12,31 @@ public abstract class QueryFormatter {
      */
     protected String table;
 
+    /*
+     * The column name of the primary key used 
+     * in the SQL statements.
+     */
+    protected String primaryKeyName;
+
     
-    public QueryFormatter(String table) {
+    public QueryFormatter(String table, String primaryKeyName) {
         this.table = table;
+        this.primaryKeyName = primaryKeyName;
     }
 
     /*
      * Returns a SQL statement used to insert entities.
      */
-    public abstract String insert(Map<String, Object> values);
+    public abstract String insert(Map<String, Object> values, LinkedList<String> exclude);
 
     /*
-     * Returns a SQL statement used to update an entity by id.
+     * Returns a SQL statement used to update entities.
      */
     public abstract String update(Map<String, Object> values, long id);
 
     /*
-     * Returns a SQL statement used to return an entity by id.
+     * Returns a SQL statement used to return an entity 
+     * by a primary key.
      */
     public abstract String findOne();
 
@@ -49,7 +57,8 @@ public abstract class QueryFormatter {
     public abstract String count();
 
     /*
-     * Returns a SQL statement used to delete an entity by id.
+     * Returns a SQL statement used to delete an entity
+     * by a primary key.
      */
     public abstract String delete();
 
@@ -76,15 +85,48 @@ public abstract class QueryFormatter {
     }
 
     /*
+     * Append a key and object to a map,
+     *  and returns the collection.
+     */
+    public static Map<String, Object> propertyAppend(Map<String, Object> properties, String key, Object obj) {
+        properties.put(key, obj);
+        return properties;
+    }
+
+    /*
+     * Append a the primary key and object to a map,
+     *  and returns the collection.
+     */
+    public Map<String, Object> propertyAppendId(Map<String, Object> properties, Object obj) {
+        properties.put(primaryKeyName, obj);
+        return properties;
+    }
+
+    /*
+     * Returns the name of the primary key
+     */
+    public String getPrimaryKey() {
+        return primaryKeyName;
+    }
+
+    /*
+     * Append a the primary key and object to a map,
+     *  and returns the collection.
+     */
+    public Object getPrimaryKeyValue(Map<String, Object> properties) {
+        return properties.get(primaryKeyName);
+    }
+
+    /*
      * Returns a string of formatted column names based on an entity's properties.
      * Meant to be used by the insert method.
      *  
      */
-    protected static String formattedInsertKeys(Map<String, Object> properties) {
+    protected String formattedInsertKeys(Map<String, Object> properties, LinkedList<String> exclude) {
         int i = 0;
         StringBuilder builder = new StringBuilder("");
         for (String key : properties.keySet()) {
-            if (key != "id") {
+            if (!exclude.contains(key)) {
                 String format = (i < properties.size()-1 ? "%s, " : "%s");
                 builder.append(String.format(format, key));
             }
@@ -99,11 +141,11 @@ public abstract class QueryFormatter {
      * Meant to be used by the insert method.
      *  
      */
-    protected static String formattedInsertValues(Map<String, Object> properties) {
+    protected String formattedInsertValues(Map<String, Object> properties, LinkedList<String> exclude) {
         int i = 0;
         StringBuilder builder = new StringBuilder("");
         for (String key : properties.keySet()) {
-            if (key != "id") {
+            if (!exclude.contains(key)) {
                 String format = (i < properties.size()-1 ? "%s, " : "%s");
                 builder.append(String.format(format, "?"));
             }
@@ -118,11 +160,11 @@ public abstract class QueryFormatter {
      * Meant to be used by the update method.
      *  
      */
-    protected static String formattedUpdateKeys(Map<String, Object> properties) {
+    protected String formattedUpdateKeys(Map<String, Object> properties) {
         int i = 0;
         StringBuilder builder = new StringBuilder("");
         for (String key : properties.keySet()) {
-            if (key != "id") {
+            if (key != this.primaryKeyName) {
                 String format = (i < properties.size()-1 ? "%s = ?, " : "%s = ?");
                 builder.append(String.format(format, key));
             }

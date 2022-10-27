@@ -7,11 +7,20 @@
         <input type="hidden" name="wishlistId" th:value="${param.wishlist_id == null ? wish.getWishlistId() : param.wishlist_id}" />
 
         <div class="form-group mt-3">
+            <label name="" class="form-label">Wish</label>
             <input type="text" name="content" th:value="${wish.getContent()}" 
                    class="form-control form-control-lg"
                    placeholder="I wish a new ..."
                    autocomplete="off"
                    required="required" />
+        </div>
+
+        <div class="form-group mt-3">
+            <label name="reservedBy" class="form-label">Name of the buyer</label>
+            <input type="text" name="reservedBy" th:value="${wish.getReservedBy()}" 
+                   class="form-control form-control-lg"
+                   placeholder="John Doe"
+                   autocomplete="off" />
         </div>
 
         <div class="d-grid mb-3">

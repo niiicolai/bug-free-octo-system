@@ -39,6 +39,12 @@ body {
     font-family: 'Nunito Sans', sans-serif;
 }
 
+.alert-primary {
+    --bs-alert-color: var(--dark);
+    --bs-alert-bg: var(--dark);
+    --bs-alert-border-color: var(--dark);
+}
+
 .btn-primary {
     --bs-btn-color: var(--white);
     --bs-btn-bg: var(--primary);
@@ -173,4 +179,15 @@ body {
     --bs-btn-disabled-color: var(--white);
     --bs-btn-disabled-bg: var(--danger-light);
     --bs-btn-disabled-border-color: var(--danger-light);
+}
+
+.toast-container {
+    position: fixed;
+    top: 20px;
+    left: 0px;
+    right: 0;
+    width: auto;
+}
+.toast-container .container {
+    height: 56px;
 }

@@ -55,7 +55,7 @@ public class UserController {
 	@PostMapping("/users")
 	public String create(Model model, User user, RedirectAttributes redirectAttributes) {
 		try {
-			user = userRepository.save(user);
+			user = userRepository.insert(user);
 			return "redirect:users/" + user.getId();
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getMessage());
@@ -66,7 +66,7 @@ public class UserController {
 	@PatchMapping("/users")
 	public String update(Model model, User user, RedirectAttributes redirectAttributes) {
 		try {
-			userRepository.save(user);
+			userRepository.update(user);
 			return "redirect:users/" + user.getId();
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getMessage());
@@ -77,7 +77,7 @@ public class UserController {
 	@DeleteMapping("/users")
 	public String delete(Model model, User user, RedirectAttributes redirectAttributes) {
 		try {
-			userRepository.delete(user.getId());
+			userRepository.delete("id", user.getId());
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getMessage());
 		}

@@ -1,23 +1,24 @@
 package com.example.demo.repository.CustomImplementation.QueryFormatters;
 
 import java.util.Map;
+import java.util.LinkedList;
 
 import com.example.demo.repository.CustomImplementation.QueryFormatter;
 
 public class MysqlQueryFormatter extends QueryFormatter {
 
-    public MysqlQueryFormatter(String table) {
-        super(table);
+    public MysqlQueryFormatter(String table, String primaryKeyName) {
+        super(table, primaryKeyName);
     }
 
     /*
      * Returns a SQL statement used to insert entities.
      */
     @Override
-    public String insert(Map<String, Object> entityProperties) {
+    public String insert(Map<String, Object> entityProperties, LinkedList<String> exclude) {
         return String.format("INSERT INTO %s (%s) VALUES (%s)", table, 
-            formattedInsertKeys(entityProperties),
-            formattedInsertValues(entityProperties));
+            formattedInsertKeys(entityProperties, exclude),
+            formattedInsertValues(entityProperties, exclude));
     }
 
     /*
@@ -25,8 +26,8 @@ public class MysqlQueryFormatter extends QueryFormatter {
      */
     @Override
     public String update(Map<String, Object> entityProperties, long id) {
-        return String.format("UPDATE %s SET %s WHERE id = %d", table,
-            formattedUpdateKeys(entityProperties), id);
+        return String.format("UPDATE %s SET %s WHERE %s = %d", table,
+            formattedUpdateKeys(entityProperties), primaryKeyName, id);
     }
 
     /*
@@ -34,7 +35,7 @@ public class MysqlQueryFormatter extends QueryFormatter {
      */
     @Override
     public String findOne() {
-        return String.format("SELECT * FROM %s WHERE id = ?", table);
+        return String.format("SELECT * FROM %s WHERE %s = ?", table, primaryKeyName);
     }
 
     /*
@@ -67,7 +68,7 @@ public class MysqlQueryFormatter extends QueryFormatter {
      */
     @Override
     public String delete() {
-        return String.format("DELETE FROM %s WHERE id = ?", table);
+        return String.format("DELETE FROM %s WHERE %s = ?", table, primaryKeyName);
     }
 
     /*
@@ -75,6 +76,6 @@ public class MysqlQueryFormatter extends QueryFormatter {
      */
     @Override
     public String last() {
-        return String.format("SELECT * FROM %s ORDER BY ID DESC LIMIT 1", table);
+        return String.format("SELECT * FROM %s ORDER BY id DESC LIMIT 1", table);
     }
 }

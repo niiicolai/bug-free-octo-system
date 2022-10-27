@@ -1,0 +1,25 @@
+<div th:fragment="toast" 
+     xmlns:th="http://www.thymeleaf.org"
+     class="d-none"
+     id="toast">
+     
+    <div class="toast-container">
+        <div class="container alert alert-dark" role="info">
+            <p id="toast-text"></p>
+        </div>
+    </div>
+    
+    <script>
+        function showToast(message, time) {
+            const toast = document.getElementById("toast");
+            const text = document.getElementById("toast-text");
+
+            toast.className = "";
+            text.innerHTML = message;
+            
+            setTimeout(() => {
+                toast.className = "d-none";
+            }, time);
+        }        
+    </script>
+</div>

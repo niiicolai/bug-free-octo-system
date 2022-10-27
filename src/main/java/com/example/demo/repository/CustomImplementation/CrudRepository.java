@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.example.demo.repository.CustomImplementation.QueryFormatters.MysqlQueryFormatter;
 
+import groovyjarjarantlr4.v4.parse.ANTLRParser.prequelConstruct_return;
+
 public abstract class CrudRepository<T> {
 
     /*
@@ -12,18 +14,22 @@ public abstract class CrudRepository<T> {
      */
     private QueryFormatter queryFormatter;
 
+    private boolean setPrimaryKeyOnCreate;
+
     /*
      * The CrudRepository constructor requires
      * a table name as parameter which the query formatter
      * uses to create SQL queries.
      */
-    public CrudRepository(String table) {
+    public CrudRepository(String table, String primaryKeyName, boolean setPrimaryKeyOnCreate) {
         
+        this.setPrimaryKeyOnCreate = setPrimaryKeyOnCreate;
+
         /*
          * Defines the type of query formatter.
          * Change the type to use another query formatter.  
          */
-        this.queryFormatter = new MysqlQueryFormatter(table);
+        this.queryFormatter = new MysqlQueryFormatter(table, primaryKeyName);
     }
 
     /*
@@ -58,33 +64,43 @@ public abstract class CrudRepository<T> {
      *      Update an entity by the specified values, 
      *      and returns the updated entity.
      */
-    public T save(T entity) throws Exception {        
+    public T insert(T entity) throws Exception {        
+        LinkedList<String> exclude = (setPrimaryKeyOnCreate ? 
+            new LinkedList<>() : QueryFormatter.exclude(queryFormatter.getPrimaryKey()));
+
         Map<String, Object> properties = properties(entity);
-        long id = (long)properties.get("id");
+        String sql = queryFormatter.insert(properties, exclude);      
+        DatabaseResponse response = Database.executeUpdate(sql, properties, exclude);
+        if (response.error()) throw new Exception(response.getMessage());
+        
+        return last();
+    }
 
-        if (id == 0) {
-            String sql = queryFormatter.insert(properties);                                    
-            DatabaseResponse response = Database.executeUpdate(sql, properties, QueryFormatter.exclude("id"));
-            if (response.error()) throw new Exception(response.getMessage());
-            return last();
-        } else {
-            String sql = queryFormatter.update(properties, id);
-            DatabaseResponse response = Database.executeUpdate(sql, properties, QueryFormatter.exclude("id"));
-            if (response.error()) throw new Exception(response.getMessage());
+    public T update(T entity) throws Exception {        
+        LinkedList<String> exclude = QueryFormatter.exclude(queryFormatter.getPrimaryKey());
 
-            return findOne(id);
-        }
+        Map<String, Object> properties = properties(entity);
+        Long primaryKey = (long)queryFormatter.getPrimaryKeyValue(properties);
+        
+        String sql = queryFormatter.update(properties, primaryKey);        
+        DatabaseResponse response = Database.executeUpdate(sql, properties, exclude);
+        if (response.error()) throw new Exception(response.getMessage());
+
+        return findOne(primaryKey);
     }
 
     /*
      * Returns an entity with the
      * specified primary key. 
      */
-    public T findOne(long primaryKey) {
-        Map<String, Object> properties = QueryFormatter.property("id", primaryKey);
+    public T findOne(Object primaryKey) {
+        Map<String, Object> properties = QueryFormatter.property("primaryKey", primaryKey);
         String sql = queryFormatter.findOne();
         DatabaseResponse response = Database.executeQuery(sql, properties, null);
-        return instantiate(response.getResultList().getFirst());
+        if (response.getResultList() != null && !response.getResultList().isEmpty())
+            return instantiate(response.getResultList().getFirst());
+        else
+            return instantiate();
     }
 
     /*
@@ -119,8 +135,8 @@ public abstract class CrudRepository<T> {
      * Delete an entity with the 
      * specified primary key. 
      */
-    public void delete(long primaryKey) throws Exception {
-        Map<String, Object> properties = QueryFormatter.property("id", primaryKey);
+    public void delete(String column, Object primaryKey) throws Exception {
+        Map<String, Object> properties = QueryFormatter.property(column, primaryKey);
         String sql = queryFormatter.delete();
         DatabaseResponse response = Database.executeUpdate(sql, properties, null);
         if (response.error()) throw new Exception(response.getMessage());
@@ -140,6 +156,9 @@ public abstract class CrudRepository<T> {
     public T last() {
         String sql = queryFormatter.last();
         DatabaseResponse response = Database.executeQuery(sql, null, null);
-        return instantiate(response.getResultList().getFirst());
+        if (response.getResultList() != null && !response.getResultList().isEmpty())
+            return instantiate(response.getResultList().getFirst());
+        else
+            return instantiate();
     }
 }

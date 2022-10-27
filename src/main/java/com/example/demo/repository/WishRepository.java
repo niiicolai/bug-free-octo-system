@@ -16,7 +16,7 @@ public class WishRepository extends CrudRepository<Wish> {
         /*
          * Specify the wishes table.
          */
-        super("Wishes");
+        super("Wishes", "id", false);
     }
 
     /*
@@ -38,6 +38,7 @@ public class WishRepository extends CrudRepository<Wish> {
         wish.setId(((Number)result.get("id")).longValue());
         wish.setContent((String)result.get("content"));
         wish.setWishlistId(((Number)result.get("wishlist_id")).longValue());
+        wish.setReservedBy((String)result.get("reserved_by"));
         return wish;
     }
 
@@ -64,6 +65,7 @@ public class WishRepository extends CrudRepository<Wish> {
         collection.put("id", entity.getId());
         collection.put("content", entity.getContent());
         collection.put("wishlist_id", entity.getWishlistId());
+        collection.put("reserved_by", entity.getReservedBy());
         return collection; 
     }
 }

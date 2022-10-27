@@ -16,7 +16,7 @@ public class WishlistRepository extends CrudRepository<Wishlist> {
         /*
          * Specify the wishlists table.
          */
-        super("Wishlists");
+        super("Wishlists", "id", false);
     }
 
     /*

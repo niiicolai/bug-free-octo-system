@@ -1,0 +1,11 @@
+<div th:fragment="show(wishlistShare, wishlistId)" xmlns:th="http://www.thymeleaf.org" class="d-inline-block">
+    
+    <div th:if="${wishlistShare.getUuid() == null}">
+        <div th:replace="wishlist_share/fragments/create.html :: create(${wishlistShare}, ${wishlistId})"></div>
+    </div>
+
+    <div th:if="${wishlistShare.getUuid() != null}">
+        <div th:replace="wishlist_share/fragments/copy.html :: copy(${wishlistShare})"></div>
+        <div th:replace="wishlist_share/fragments/delete.html :: delete(${wishlistShare})"></div>
+    </div>
+</div>

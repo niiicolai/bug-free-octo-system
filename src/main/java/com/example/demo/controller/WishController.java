@@ -37,7 +37,7 @@ public class WishController {
 	@PostMapping("/wishes")
 	public String create(Model model, Wish wish, RedirectAttributes redirectAttributes) {
 		try {
-			wish = wishRepository.save(wish);
+			wish = wishRepository.insert(wish);
 			return "redirect:wishlists/" + wish.getWishlistId();
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getMessage());
@@ -48,7 +48,7 @@ public class WishController {
 	@PatchMapping("/wishes")
 	public String update(Model model, Wish wish, RedirectAttributes redirectAttributes) {
 		try {
-			wishRepository.save(wish);
+			wishRepository.update(wish);
 			return "redirect:wishlists/" + wish.getWishlistId();
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getMessage());
@@ -59,7 +59,7 @@ public class WishController {
 	@DeleteMapping("/wishes")
 	public String delete(Model model, Wish wish, RedirectAttributes redirectAttributes) {
 		try {
-			wishRepository.delete(wish.getId());
+			wishRepository.delete("id", wish.getId());
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getMessage());
 		}
