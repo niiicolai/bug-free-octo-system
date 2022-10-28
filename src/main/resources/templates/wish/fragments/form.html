@@ -1,13 +1,14 @@
-<div th:fragment="form(method)" 
+<div th:fragment="form(path, method, allowEditContent)" 
      xmlns:th="http://www.thymeleaf.org"
      class="card">
-
-    <form action="#" th:action="@{/wishes}" th:object="${wish}" th:method="${method}" class="form-control">
+     
+    <form action="#" th:action="${path}" th:object="${wish}" th:method="${method}" class="form-control">
         <input type="hidden" name="id" th:value="${wish.getId()}" />
         <input type="hidden" name="wishlistId" th:value="${param.wishlist_id == null ? wish.getWishlistId() : param.wishlist_id}" />
 
-        <div class="form-group mt-3">
-            <label name="" class="form-label">Wish</label>
+        <div th:if="${allowEditContent}" 
+             class="form-group mt-3">
+            <label name="content" class="form-label">Wish</label>
             <input type="text" name="content" th:value="${wish.getContent()}" 
                    class="form-control form-control-lg"
                    placeholder="I wish a new ..."

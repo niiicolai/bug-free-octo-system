@@ -3,7 +3,7 @@
      class="card">
 
     <form action="#" th:action="@{/wishlists}" th:object="${wishlist}" th:method="${method}" class="form-control">
-        <input type="hidden" name="userId" th:value="${param.user_id == null ? wishlist.getUserId() : param.user_id}" />
+        <input type="hidden" name="userId" th:value="${wishlist.getUserId() != 0 ? wishlist.getUserId() : userId}" />
         <input type="hidden" name="id" th:value="${wishlist.getId()}" />
         
         <div class="form-group mt-3">

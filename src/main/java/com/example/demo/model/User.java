@@ -2,22 +2,21 @@ package com.example.demo.model;
 
 import java.time.LocalDateTime;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 public class User {
     
     private long id;
     private String email;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private String password;
 
     public User() {
     }
 
-    public User(long id, String email, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public User(long id, String email, String password) {
         this.id = id;
         this.email = email;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.password = password;
     }
 
     public long getId() {
@@ -36,11 +35,16 @@ public class User {
         this.email = email;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return this.createdAt;
+    public String getPassword() {
+        return this.password;
     }
 
-    public LocalDateTime getUpdatedAt() {
-        return this.updatedAt;
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void encodePassword() {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		password = encoder.encode(password);
     }
 }

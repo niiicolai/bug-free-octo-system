@@ -13,7 +13,7 @@
                 <a th:href="@{/wishlists/{id}(id=${wish.getWishlistId()})}" class="btn btn-outline-primary btn-sm">Show Wishlist</a>
             </div>
 
-            <div th:replace="wish/fragments/form.html :: form('patch')"></div>
+            <div th:replace="wish/fragments/form.html :: form(@{/wishes}, 'patch', true)"></div>
         </div>
     </body>
 </html>

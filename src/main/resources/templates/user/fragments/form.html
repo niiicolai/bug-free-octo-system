@@ -2,19 +2,40 @@
      xmlns:th="http://www.thymeleaf.org"
      class="card">
 
-    <form action="#" th:action="@{/users}" th:object="${user}" th:method="${method}" class="form-control">
-        <input type="hidden" name="id" th:value="${user.getId()}" />
-
-        <div class="form-group mt-3">
-            <input type="email" name="email" th:value="${user.getEmail()}" 
-                   class="form-control form-control-lg"
-                   placeholder="example@mail.com"
-                   autocomplete="off"
-                   required="required" />
-        </div>
-
-        <div class="d-grid mb-3">
-            <input type="submit" class="btn btn-success mt-3" value="Save" />
-        </div>
-    </form>
+    <div class="card-body">
+        <form action="#" th:action="@{/users}" th:object="${user}" th:method="${method}">
+            <input type="hidden" name="id" th:value="${user.getId()}" />
+    
+            <div class="form-group mt-3">
+                <label name="email" class="form-label">E-mail</label>
+                <input type="email" name="email" th:value="${user.getEmail()}" 
+                       class="form-control form-control-lg"
+                       placeholder="example@mail.com"
+                       autocomplete="off"
+                       required="required" />
+            </div>
+    
+            <div class="form-group mt-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <label name="password" class="form-label">Password</label>
+                    <small>Min length: 8 characters</small>
+                </div>
+                <input type="password" name="password" 
+                       class="form-control form-control-lg"
+                       placeholder="new password ..."
+                       autocomplete="off"
+                       required="required"
+                       minlength="8" />
+                
+            </div>
+    
+            <div class="d-grid mb-3">
+                <input type="submit" class="btn btn-success mt-3" value="Save" />
+            </div>
+        </form>
+        
+        <hr>
+        
+        <div th:if="${user.id != 0}" th:replace="user/fragments/delete.html :: delete(${user})"></div>
+    </div>
 </div>

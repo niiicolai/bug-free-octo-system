@@ -9,11 +9,11 @@
         <div layout:fragment="content">
 
             <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
-                <h1 class="mb-0 mt-0">New Wish</h1>
-                <a th:href="@{/wishlists/{id}(id=${param.wishlist_id})}" class="btn btn-outline-primary btn-sm">Show Wishlist</a>
+                <h1 class="mb-0 mt-0">Reserve Wish</h1>
+                <a th:href="@{/wishlist-shares/{uuid}(uuid=${wishlistShare.getUuid()})}" class="btn btn-outline-primary btn-sm">Show Wishlist</a>
             </div>
 
-            <div th:replace="wish/fragments/form.html :: form(@{/wishes}, 'post', true)"></div>
+            <div th:replace="wish/fragments/form.html :: form(@{/wishlist-shares-reserve/{uuid}/wish/{id}(uuid=${wishlistShare.getUuid()}, id=${wish.getId()})}, 'patch', false)"></div>
         </div>
     </body>
 </html>

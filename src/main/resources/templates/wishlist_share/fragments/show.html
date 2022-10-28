@@ -1,4 +1,6 @@
-<div th:fragment="show(wishlistShare, wishlistId)" xmlns:th="http://www.thymeleaf.org" class="d-inline-block">
+<div th:fragment="show(wishlistShare, wishlistId)" 
+     xmlns:th="http://www.thymeleaf.org" 
+     class="d-inline-block">
     
     <div th:if="${wishlistShare.getUuid() == null}">
         <div th:replace="wishlist_share/fragments/create.html :: create(${wishlistShare}, ${wishlistId})"></div>

@@ -63,6 +63,7 @@ public class UserRepository extends CrudRepository<User> {
         HashMap<String, Object> collection = new HashMap<String, Object>();
         collection.put("id", entity.getId());
         collection.put("email", entity.getEmail());
+        collection.put("password", entity.getPassword());
         return collection; 
     }
 }
