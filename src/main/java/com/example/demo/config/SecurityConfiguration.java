@@ -28,7 +28,8 @@ public class SecurityConfiguration {
                 "/wishlist-shares/**", 
                 "/wishlist-shares-reserve/**",
                 "/users/new",
-                "/users/create")
+                "/users/create",
+                "/css/**")
             .permitAll()
             .and()
             .authorizeRequests()
