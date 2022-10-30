@@ -1,22 +1,14 @@
 package com.example.demo.controller;
 
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.ui.Model;
 
-import java.sql.SQLDataException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.WishlistRepository;
 import com.example.demo.config.CustomUserDetails;
@@ -33,7 +25,7 @@ public class UserController {
 		this.wishlistRepository = wishlistRepository;
 	}
 
-	@RequestMapping(value = {"/users", "/"}, method = RequestMethod.GET)
+	@GetMapping("/users")
 	public String show(Model model, @AuthenticationPrincipal CustomUserDetails authUser) {
 		long id = authUser.getId();
 
@@ -56,7 +48,7 @@ public class UserController {
 		return "user/edit";
 	}
 
-	@PostMapping("/users")
+	@PostMapping("/users/create")
 	public String create(Model model, User user, RedirectAttributes redirectAttributes) {
 		try {
             user.encodePassword();
@@ -65,7 +57,7 @@ public class UserController {
 			return "redirect:users";
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getMessage());
-			return "redirect:users/new";
+			return "redirect:/users/new";
 		}
 	}
 
@@ -80,7 +72,7 @@ public class UserController {
 			return "redirect:users";
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getMessage());
-			return "redirect:users/edit";
+			return "redirect:/users/edit";
 		}		
 	}
 	
@@ -95,6 +87,6 @@ public class UserController {
 			redirectAttributes.addAttribute("error", e.getMessage());
 		}
 
-		return "redirect:login";
+		return "redirect:/login";
 	}
 }

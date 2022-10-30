@@ -1,15 +1,15 @@
 package com.example.demo.config;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class CustomUserDetails implements UserDetails {
-
-    private Collection<? extends GrantedAuthority> authorities;
 
     protected long id;
 
@@ -53,7 +53,9 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        ArrayList<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
+        list.add(new SimpleGrantedAuthority("ROLE_USER"));
+        return list;
     }
 
     @Override
@@ -88,13 +90,19 @@ public class CustomUserDetails implements UserDetails {
 
     public static boolean notAllowed(long userId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
-        
-        boolean notAllowed = (user.id != userId);
-        if (notAllowed) {
-            System.out.println("AUTHENTICATION: NOT ALLOWED");
+        Object principal = auth.getPrincipal();
+
+        if (principal instanceof CustomUserDetails) {
+            CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
+            
+            boolean notAllowed = (user.id != userId);
+            if (notAllowed) {
+                System.out.println("AUTHENTICATION: NOT ALLOWED");
+            }
+
+            return notAllowed;
         }
 
-        return notAllowed;
+        return true;
     }
 }

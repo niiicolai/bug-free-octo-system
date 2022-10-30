@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +14,6 @@ import com.example.demo.repository.WishlistShareRepository;
 import com.example.demo.repository.WishlistRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.WishRepository;
-import com.example.demo.model.WishlistShare;
 import com.example.demo.config.CustomUserDetails;
 import com.example.demo.model.Wishlist;
 

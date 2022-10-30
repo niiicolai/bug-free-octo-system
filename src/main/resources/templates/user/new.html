@@ -8,7 +8,7 @@
     <body>
         <div layout:fragment="content">
             <h1 class="mb-3 mt-3">New User</h1>
-            <div th:replace="user/fragments/form.html :: form('post')"></div>
+            <div th:replace="user/fragments/form.html :: form('/users/create', 'post')"></div>
         </div>
     </body>
 </html>

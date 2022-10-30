@@ -29,7 +29,7 @@
                         </a>
 
                         <div th:if="${wishlistShare != null && !canEdit && wish.getReservedBy().length() == 0}">
-                            <a th:href="@{/wishlist-shares/{uuid}/reserve-wish/{id}(id=${wish.getId()}, uuid=${wishlistShare.getUuid()})}" class="btn btn-primary btn-sm">
+                            <a th:href="@{/wishlist-shares/{uuid}/wish/{id}(id=${wish.getId()}, uuid=${wishlistShare.getUuid()})}" class="btn btn-primary btn-sm">
                                 <i class="fa-solid fa-user-plus"></i> Reserve 
                             </a>
                         </div>

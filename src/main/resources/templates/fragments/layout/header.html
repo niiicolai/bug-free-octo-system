@@ -8,9 +8,22 @@
                 <a class="navbar-link btn btn-outline-secondary btn-sm" href="/">
                     <i class="fa-solid fa-house"></i>
                 </a>
-                <a class="navbar-link btn btn-outline-secondary btn-sm" href="/logout">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                </a>
+                <span sec:authorize="hasRole('ROLE_USER')">
+                    <a class="navbar-link btn btn-outline-secondary btn-sm" href="/users">
+                        <i class="fa-solid fa-user"></i>
+                    </a>
+                    <a class="navbar-link btn btn-outline-secondary btn-sm" href="/logout">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </a>
+                </span>
+                <span sec:authorize="!hasRole('ROLE_USER')">
+                    <a class="navbar-link btn btn-outline-secondary btn-sm" href="/login">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                    </a>
+                    <a class="navbar-link btn btn-outline-secondary btn-sm" href="/users/new">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </a>
+                </span>
             </div>
         </div>
     </nav>

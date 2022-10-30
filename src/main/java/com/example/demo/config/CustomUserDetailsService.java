@@ -2,14 +2,12 @@ package com.example.demo.config;
 
 import java.util.Map;
 
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.example.demo.config.CustomUserDetails;
 import com.example.demo.repository.CustomImplementation.Database;
 import com.example.demo.repository.CustomImplementation.DatabaseResponse;
 import com.example.demo.repository.CustomImplementation.QueryFormatter;
