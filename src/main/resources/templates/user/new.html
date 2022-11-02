@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+    layout:decorate="~{fragments/layout/default}">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <h1 class="mb-3 mt-3">New User</h1>
+            <div th:replace="user/fragments/form.html :: form('/users/create', 'post')"></div>
+        </div>
+    </body>
+</html>

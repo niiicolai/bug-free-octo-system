@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+    layout:decorate="~{fragments/layout/default}">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <div layout:fragment="content">
+
+            <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
+                <h1 class="mb-0 mt-0">New Wish</h1>
+                <a th:href="@{/wishlists/{id}(id=${param.wishlist_id})}" class="btn btn-outline-primary btn-sm">Show Wishlist</a>
+            </div>
+
+            <div th:replace="wish/fragments/form.html :: form(@{/wishes}, 'post', true)"></div>
+        </div>
+    </body>
+</html>

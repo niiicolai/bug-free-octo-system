@@ -1,0 +1,9 @@
+<div th:fragment="create(wishlistShare, wishlistId)" xmlns:th="http://www.thymeleaf.org" class="d-inline-block">
+    <form action="#" th:action="@{/edit-wishlist-shares}" th:object="${wishlistShare}" th:method="post">
+        <input type="hidden" name="wishlistId" th:value="${wishlistId}" />
+        <button type="submit" class="btn btn-outline-primary btn-sm">
+            <i class="fa-solid fa-plus"></i>
+            <i class="fa-solid fa-link"></i>
+        </button>
+    </form>
+</div>

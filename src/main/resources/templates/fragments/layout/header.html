@@ -1,0 +1,22 @@
+<header th:fragment="header" 
+        xmlns:th="http://www.thymeleaf.org">
+        
+    <nav class="navbar navbar-expand-lg navbar-white bg-white">
+        <div class="container">
+            <a class="navbar-brand" href="/">Another Wishlist Company</a>
+            <div>
+                <a class="navbar-link btn btn-outline-secondary btn-sm" href="/">
+                    <i class="fa-solid fa-house"></i>
+                </a>
+                <span sec:authorize="hasRole('ROLE_USER')">
+                    <a class="navbar-link btn btn-outline-secondary btn-sm" href="/users">
+                        <i class="fa-solid fa-user"></i>
+                    </a>
+                    <a class="navbar-link btn btn-outline-secondary btn-sm" href="/logout">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </a>
+                </span>
+            </div>
+        </div>
+    </nav>
+</header>

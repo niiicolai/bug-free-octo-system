@@ -1,0 +1,16 @@
+<div th:fragment="copy(wishlistShare)" xmlns:th="http://www.thymeleaf.org" class="d-inline-block">
+    <input type="hidden" id="wishlist-uuid" th:value="${wishlistShare.getUuid()}" />
+    <button class="btn btn-outline-primary btn-sm" onclick="copyUuid()">
+        <i class="fa-regular fa-copy"></i>
+        <i class="fa-solid fa-link"></i>
+    </button>
+
+    <script>
+        function copyUuid() {
+            const input = document.getElementById("wishlist-uuid");
+            const url = window.location.origin + "/wishlist-shares/" + input.value;
+            navigator.clipboard.writeText(url);
+            showToast("Copied wishlist link to clipholder.", 2000);
+        }
+    </script>
+</div>

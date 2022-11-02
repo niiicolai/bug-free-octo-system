@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    layout:decorate="~{fragments/layout/default}">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <div layout:fragment="content">
+            
+            <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
+                <div>
+                    <small class="text-muted">User e-mail</small><br>
+                    <strong th:text="${user.getEmail()}" class="mb-0 mt-0" />
+                </div>
+                <div class="d-flex gap-2">
+                    <a th:href="@{/wishlists/new}" class="btn btn-outline-primary btn-sm">
+                        <i class="fa-solid fa-plus"></i>
+                        <i class="fa-solid fa-clipboard-list"></i>
+                    </a>
+                    <div class="vr"></div>
+                    <a th:href="@{/users/edit}" class="btn btn-outline-primary btn-sm">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+                    
+                </div>
+            </div>
+
+            <div th:replace="wishlist/fragments/collection.html :: collection"></div>
+        </div>
+    </body>
+</html>

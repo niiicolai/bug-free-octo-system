@@ -1,0 +1,25 @@
+<div th:fragment="collection" xmlns:th="http://www.thymeleaf.org">
+    <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between align-items-center mb-1">
+            <small class="text-muted">E-mail</small>
+            <small class="text-muted">Options</small>
+        </li>
+        <span th:each="user: ${users}">
+            <li class="list-group-item d-flex justify-content-between align-items-center mb-1">
+                <div th:text="${user.getEmail()}"></div>
+                <div class="d-flex gap-2">
+                    <a th:href="@{/users/{id}(id=${user.getId()})}" class="btn btn-primary btn-sm">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+    
+                    <div class="vr"></div>
+    
+                    <a th:href="@{/users/{id}/edit(id=${user.getId()})}" class="btn btn-primary btn-sm">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+                    <div th:replace="user/fragments/delete.html :: delete(${user})"></div>
+                </div>
+            </li>
+        </span>
+    </ul>
+</div>

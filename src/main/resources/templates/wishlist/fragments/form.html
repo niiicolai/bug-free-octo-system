@@ -1,0 +1,21 @@
+<div th:fragment="form(method)" 
+     xmlns:th="http://www.thymeleaf.org"
+     class="card">
+
+    <form action="#" th:action="@{/wishlists}" th:object="${wishlist}" th:method="${method}" class="form-control">
+        <input type="hidden" name="userId" th:value="${wishlist.getUserId() != 0 ? wishlist.getUserId() : userId}" />
+        <input type="hidden" name="id" th:value="${wishlist.getId()}" />
+        
+        <div class="form-group mt-3">
+            <input type="text" name="title" th:value="${wishlist.getTitle()}" 
+                   class="form-control form-control-lg"
+                   placeholder="Birthday wishlist ..."
+                   autocomplete="off"
+                   required="required" />
+        </div>
+
+        <div class="d-grid mb-3">
+            <input type="submit" class="btn btn-success mt-3" value="Save" />
+        </div>
+    </form>
+</div>
