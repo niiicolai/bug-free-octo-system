@@ -2,6 +2,7 @@ package com.example.demo.repository.CustomImplementation;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -27,12 +28,12 @@ public abstract class QueryFormatter {
     /*
      * Returns a SQL statement used to insert entities.
      */
-    public abstract String insert(Map<String, Object> values, LinkedList<String> exclude);
+    public abstract String insert(Map<String, Object> values, List<String> exclude);
 
     /*
      * Returns a SQL statement used to update entities.
      */
-    public abstract String update(Map<String, Object> values, long id);
+    public abstract String update(Map<String, Object> values, Object primaryKey);
 
     /*
      * Returns a SQL statement used to return an entity 
@@ -52,9 +53,19 @@ public abstract class QueryFormatter {
     public abstract String findWhere(String column);
 
     /*
+     * Returns a SQL statement used to return all entities
+     * where a column is equal to a value,
+     * and joins another table based on a foreign key.
+     */
+    public abstract String findWhereJoin(String column, String referencesTable, String foreignKeyColumn);
+    
+
+    /*
      * Returns a SQL statement used to return the number of all entities.
      */
     public abstract String count();
+
+    public abstract String countWhereJoin(String column, String referencesTable, String foreignKeyColumn);
 
     /*
      * Returns a SQL statement used to delete an entity
@@ -68,41 +79,6 @@ public abstract class QueryFormatter {
     public abstract String last();
 
     /*
-     * Returns a LinkedList of properties that should be excluded
-     * from the prepared statement.
-     */
-    public static LinkedList<String> exclude(String ... varArgs) {
-        return new LinkedList<String>(Arrays.asList(varArgs));
-    }
-
-    /*
-     * Returns a collection with a single property.
-     */
-    public static Map<String, Object> property(String key, Object obj) {
-        HashMap<String, Object> property = new HashMap<String, Object>();
-        property.put(key, obj);
-        return property;
-    }
-
-    /*
-     * Append a key and object to a map,
-     *  and returns the collection.
-     */
-    public static Map<String, Object> propertyAppend(Map<String, Object> properties, String key, Object obj) {
-        properties.put(key, obj);
-        return properties;
-    }
-
-    /*
-     * Append a the primary key and object to a map,
-     *  and returns the collection.
-     */
-    public Map<String, Object> propertyAppendId(Map<String, Object> properties, Object obj) {
-        properties.put(primaryKeyName, obj);
-        return properties;
-    }
-
-    /*
      * Returns the name of the primary key
      */
     public String getPrimaryKey() {
@@ -110,19 +86,11 @@ public abstract class QueryFormatter {
     }
 
     /*
-     * Append a the primary key and object to a map,
-     *  and returns the collection.
-     */
-    public Object getPrimaryKeyValue(Map<String, Object> properties) {
-        return properties.get(primaryKeyName);
-    }
-
-    /*
      * Returns a string of formatted column names based on an entity's properties.
      * Meant to be used by the insert method.
      *  
      */
-    protected String formattedInsertKeys(Map<String, Object> properties, LinkedList<String> exclude) {
+    protected String formattedInsertKeys(Map<String, Object> properties, List<String> exclude) {
         int i = 0;
         StringBuilder builder = new StringBuilder("");
         for (String key : properties.keySet()) {
@@ -141,7 +109,7 @@ public abstract class QueryFormatter {
      * Meant to be used by the insert method.
      *  
      */
-    protected String formattedInsertValues(Map<String, Object> properties, LinkedList<String> exclude) {
+    protected String formattedInsertValues(Map<String, Object> properties, List<String> exclude) {
         int i = 0;
         StringBuilder builder = new StringBuilder("");
         for (String key : properties.keySet()) {

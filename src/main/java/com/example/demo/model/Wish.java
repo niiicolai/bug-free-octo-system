@@ -1,19 +1,27 @@
 package com.example.demo.model;
 
+import com.example.demo.config.CustomUserDetails;
+import com.example.demo.repository.WishlistRepository;
+import com.example.demo.repository.CustomImplementation.CrudRepository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 public class Wish {
     
     private long id;
     private long wishlistId;
     private String content;
-    private String reservedBy;
+    private LocalDateTime createdAt;
+    private WishReserver wishReserver;
 
     public Wish() {
     }
 
-    public Wish(long id, long wishlistId, String content, String reservedBy) {
+    public Wish(long id, long wishlistId, String content, LocalDateTime createdAt) {
         this.id = id;
         this.content = content;
-        this.reservedBy = reservedBy;
+        this.createdAt = createdAt;
     }
 
     public long getId() {
@@ -40,11 +48,28 @@ public class Wish {
         return this.content;
     }
 
-    public void setReservedBy(String reservedBy) {
-        this.reservedBy = reservedBy;
+    public void setWishReserver(WishReserver wishReserver) {
+        this.wishReserver = wishReserver;
     }
 
-    public String getReservedBy() {
-        return this.reservedBy;
+    public WishReserver getWishReserver() {
+        return this.wishReserver;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public boolean notAuthorizeNew(WishlistRepository repository) {
+        return notAuthorizeExisting(repository);
+    }
+
+    public boolean notAuthorizeExisting(WishlistRepository repository) {
+        Wishlist list = repository.findOne(wishlistId);
+        return CustomUserDetails.AuthenticatedUser().getId() != list.getUserId();
     }
 }

@@ -21,18 +21,23 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center mb-1">
                     <div>
                         <span th:text="${wish.getContent()}" /> 
-                        <i th:if="${wish.getReservedBy().length() > 0}">(Reserved by <span th:text="${wish.getReservedBy()}" />)</i>
+                        <i th:if="${wish.getWishReserver() != null}">(Reserved by <span th:text="${wish.getWishReserver().getFullname()}" />)</i>
                     </div>
                     <div class="d-flex gap-2">
-                        <a th:if="${canEdit}" th:href="@{/wishes/{id}/edit(id=${wish.getId()})}" class="btn btn-primary btn-sm">
-                            <i class="fa-solid fa-pen"></i>
-                        </a>
-
-                        <div th:if="${wishlistShare != null && !canEdit && wish.getReservedBy().length() == 0}">
-                            <a th:href="@{/wishlist-shares/{uuid}/wish/{id}(id=${wish.getId()}, uuid=${wishlistShare.getUuid()})}" class="btn btn-primary btn-sm">
+                        <div th:if="${wishlistShare != null && wish.getWishReserver() == null}">
+                            <a th:href="@{/wish-reservers/{uuid}/wish/{id}(id=${wish.getId()}, uuid=${wishlistShare.getUuid()})}" class="btn btn-primary btn-sm">
                                 <i class="fa-solid fa-user-plus"></i> Reserve 
                             </a>
                         </div>
+
+                        <div th:if="${canEdit && wish.getWishReserver() != null}">
+                            <div th:replace="wish_reserver/fragments/delete.html :: delete(${wish.getWishReserver()}, ${wish.getId()})"></div>
+                        </div>
+
+                        <a th:if="${canEdit}" th:href="@{/wishes/{id}/edit(id=${wish.getId()})}" class="btn btn-primary btn-sm">
+                            <i class="fa-solid fa-pen"></i>
+                        </a>
+                        
                         <div th:replace="wish/fragments/delete.html :: delete(${wish})"></div>
                     </div>
                 </li>

@@ -11,9 +11,7 @@ import org.springframework.ui.Model;
 
 import com.example.demo.repository.WishlistRepository;
 import com.example.demo.repository.WishRepository;
-import com.example.demo.config.CustomUserDetails;
 import com.example.demo.model.Wish;
-import com.example.demo.model.Wishlist;
 
 @Controller
 public class WishController {
@@ -34,21 +32,23 @@ public class WishController {
 
 	@GetMapping("/wishes/{id}/edit")
 	public String edit(Model model, @PathVariable("id") long id) {
-		if (blockModifyingOthers(id))
+		Wish wish = wishRepository.findOne(id);
+
+		if (wish.notAuthorizeExisting(wishlistRepository))
 			return "redirect:/users";
 
-		model.addAttribute("wish", wishRepository.findOne(id));
+		model.addAttribute("wish", wish);
 		return "wish/edit";
 	}
 
 	@PostMapping("/wishes")
 	public String create(Model model, Wish wish, RedirectAttributes redirectAttributes) {
-		if (blockTransferingOthers(wish.getWishlistId()))
-			return "redirect:/users";
+		if (wish.notAuthorizeNew(wishlistRepository))
+			return "redirect:/";
 		
 		try {
 			wish = wishRepository.insert(wish);
-			return "redirect:wishlists/" + wish.getWishlistId();
+			return String.format("redirect:wishlists/%d", wish.getWishlistId());
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getMessage());
 			return "redirect:wishes/new";
@@ -57,39 +57,29 @@ public class WishController {
 
 	@PatchMapping("/wishes")
 	public String update(Model model, Wish wish, RedirectAttributes redirectAttributes) {
-		if (blockModifyingOthers(wish.getId()) || blockTransferingOthers(wish.getWishlistId()))
-			return "redirect:/users";
-
+		if (wish.notAuthorizeExisting(wishlistRepository))
+			return "redirect:/";
+		
 		try {
 			wishRepository.update(wish);
-			return "redirect:wishlists/" + wish.getWishlistId();
+			return String.format("redirect:wishlists/%d", wish.getWishlistId());
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getMessage());
-			return "redirect:wishes/"  + wish.getId() + "/edit";
+			return String.format("redirect:wishes/%d/edit", wish.getId());
 		}		
 	}
 	
 	@DeleteMapping("/wishes")
 	public String delete(Model model, Wish wish, RedirectAttributes redirectAttributes) {
-		if (blockModifyingOthers(wish.getId()))
-			return "redirect:/users";
-
+		if (wish.notAuthorizeExisting(wishlistRepository))
+			return "redirect:/";
+		
 		try {
 			wishRepository.delete("id", wish.getId());
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getMessage());
 		}
 
-		return "redirect:wishlists/" + wish.getWishlistId();
-	}
-
-	private boolean blockModifyingOthers(long wishId) {
-		Wish wish = wishRepository.findOne(wishId);
-		return blockTransferingOthers(wish.getWishlistId());
-	}
-
-	private boolean blockTransferingOthers(long wishlistId) {
-		Wishlist wishlist = wishlistRepository.findOne(wishlistId);
-		return CustomUserDetails.notAllowed(wishlist.getUserId());
+		return String.format("redirect:wishlists/%d", wish.getWishlistId());
 	}
 }

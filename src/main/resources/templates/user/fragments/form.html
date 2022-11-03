@@ -3,8 +3,17 @@
      class="card">
 
     <div class="card-body">
-        <form action="#" th:action="@{${url}}" th:object="${user}" th:method="${method}">
+        <form th:action="@{${url}}" th:object="${user}" th:method="${method}">
             <input type="hidden" name="id" th:value="${user.getId()}" />
+
+            <div class="form-group mt-3">
+                <label name="fullname" class="form-label">Fullname</label>
+                <input type="text" name="fullname" th:value="${user.getFullname()}" 
+                       class="form-control form-control-lg"
+                       placeholder="John Doe"
+                       autocomplete="off"
+                       required="required" />
+            </div>
     
             <div class="form-group mt-3">
                 <label name="email" class="form-label">E-mail</label>

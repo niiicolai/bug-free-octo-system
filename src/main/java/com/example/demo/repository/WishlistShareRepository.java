@@ -3,6 +3,7 @@ package com.example.demo.repository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -37,6 +38,7 @@ public class WishlistShareRepository extends CrudRepository<WishlistShare> {
         WishlistShare wishlistShare = instantiate();
         wishlistShare.setWishlistId(((Number)result.get("wishlist_id")).longValue());
         wishlistShare.setUuid((String)result.get("uuid"));
+        wishlistShare.setCreatedAt((LocalDateTime)result.get("created_at"));
         return wishlistShare;
     }
 
@@ -52,6 +54,11 @@ public class WishlistShareRepository extends CrudRepository<WishlistShare> {
             collection.add(instantiate(result));
         }
         return collection;
+    }
+
+    @Override
+    protected Iterable<WishlistShare> instantiateCollectionWithRelation(LinkedList<Map<String, Object>> resultList) {
+        return new LinkedList<WishlistShare>();
     }
 
     /*

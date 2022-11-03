@@ -1,20 +1,27 @@
 package com.example.demo.model;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import java.time.LocalDateTime;
+
+import com.example.demo.config.CustomUserDetails;
+import com.example.demo.config.SecurityConfiguration;
 
 public class User {
     
     private long id;
+    private String fullname;
     private String email;
     private String password;
+    private LocalDateTime createdAt;
 
     public User() {
     }
 
-    public User(long id, String email, String password) {
+    public User(long id, String fullname, String email, String password, LocalDateTime createdAt) {
         this.id = id;
+        this.fullname = fullname;
         this.email = email;
         this.password = password;
+        this.createdAt = createdAt;
     }
 
     public long getId() {
@@ -23,6 +30,14 @@ public class User {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 
     public String getEmail() {
@@ -40,9 +55,20 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
     public void encodePassword() {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		password = encoder.encode(password);
+		password = SecurityConfiguration.PASSWORD_ENCODER.encode(password);
+    }
+
+    public boolean notAuthorizeExisting() {
+        return CustomUserDetails.AuthenticatedUser().getId() != id;
     }
 }

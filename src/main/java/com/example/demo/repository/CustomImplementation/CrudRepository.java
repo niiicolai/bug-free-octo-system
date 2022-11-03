@@ -51,6 +51,8 @@ public abstract class CrudRepository<T> {
      */
     protected abstract Iterable<T> instantiateCollection(LinkedList<Map<String, Object>> resultList);
 
+    protected abstract Iterable<T> instantiateCollectionWithRelation(LinkedList<Map<String, Object>> resultList);
+
     /*
      * Returns an entity's properties as a Map collection.
      */
@@ -64,26 +66,30 @@ public abstract class CrudRepository<T> {
      *      Update an entity by the specified values, 
      *      and returns the updated entity.
      */
-    public T insert(T entity) throws Exception {        
-        LinkedList<String> exclude = (setPrimaryKeyOnCreate ? 
-            new LinkedList<>() : QueryFormatter.exclude(queryFormatter.getPrimaryKey()));
-
+    public T insert(T entity) throws Exception {     
         Map<String, Object> properties = properties(entity);
-        String sql = queryFormatter.insert(properties, exclude);      
-        DatabaseResponse response = Database.executeUpdate(sql, properties, exclude);
+        String exclude = (!setPrimaryKeyOnCreate ? queryFormatter.getPrimaryKey() : null);
+        DatabaseRequest request = new DatabaseRequest();
+        request.setProperties(properties);
+        request.setExclude(exclude);        
+        request.setSql(queryFormatter.insert(properties, request.getExclude()));
+        
+        DatabaseResponse response = Database.executeUpdate(request);
         if (response.error()) throw new Exception(response.getMessage());
         
         return last();
     }
 
-    public T update(T entity) throws Exception {        
-        LinkedList<String> exclude = QueryFormatter.exclude(queryFormatter.getPrimaryKey());
-
+    public T update(T entity) throws Exception {
         Map<String, Object> properties = properties(entity);
-        Long primaryKey = (long)queryFormatter.getPrimaryKeyValue(properties);
-        
-        String sql = queryFormatter.update(properties, primaryKey);        
-        DatabaseResponse response = Database.executeUpdate(sql, properties, exclude);
+        String primaryKeyColumn = queryFormatter.getPrimaryKey();
+        Object primaryKey = properties.get(primaryKeyColumn);
+        DatabaseRequest request = new DatabaseRequest();
+        request.setProperties(properties);
+        request.setExclude(primaryKeyColumn);
+        request.setSql(queryFormatter.update(properties, primaryKey));
+           
+        DatabaseResponse response = Database.executeUpdate(request);
         if (response.error()) throw new Exception(response.getMessage());
 
         return findOne(primaryKey);
@@ -94,11 +100,13 @@ public abstract class CrudRepository<T> {
      * specified primary key. 
      */
     public T findOne(Object primaryKey) {
-        Map<String, Object> properties = QueryFormatter.property("primaryKey", primaryKey);
-        String sql = queryFormatter.findOne();
-        DatabaseResponse response = Database.executeQuery(sql, properties, null);
-        if (response.getResultList() != null && !response.getResultList().isEmpty())
-            return instantiate(response.getResultList().getFirst());
+        DatabaseRequest request = new DatabaseRequest();
+        request.setProperty("primaryKey", primaryKey);
+        request.setSql(queryFormatter.findOne());
+        DatabaseResponse response = Database.executeQuery(request);
+
+        if (response.getFirstResult() != null)
+            return instantiate(response.getFirstResult());
         else
             return instantiate();
     }
@@ -107,8 +115,10 @@ public abstract class CrudRepository<T> {
      * Returns all entities. 
      */
     public Iterable<T> findAll() {
-        String sql = queryFormatter.findAll();
-        DatabaseResponse response = Database.executeQuery(sql, null, null);
+        DatabaseRequest request = new DatabaseRequest();
+        request.setSql(queryFormatter.findAll());
+        DatabaseResponse response = Database.executeQuery(request);
+
         return instantiateCollection(response.getResultList());
     }
 
@@ -116,18 +126,45 @@ public abstract class CrudRepository<T> {
      * Returns all entities by where clause. 
      */
     public Iterable<T> findWhere(String column, Object value) {
-        Map<String, Object> properties = QueryFormatter.property(column, value);
-        String sql = queryFormatter.findWhere(column);
-        DatabaseResponse response = Database.executeQuery(sql, properties, null);        
+        DatabaseRequest request = new DatabaseRequest();
+        request.setProperty(column, value);
+        request.setSql(queryFormatter.findWhere(column));
+        DatabaseResponse response = Database.executeQuery(request);
+
         return instantiateCollection(response.getResultList());
+    }
+
+     /*
+     * Returns all entities by where clause with a collection. 
+     */
+    public Iterable<T> findWhereJoin(String column, Object value, String referencesTable, String foreignKeyColumn) {
+        DatabaseRequest request = new DatabaseRequest();
+        request.setProperty(column, value);
+        request.setSql(queryFormatter.findWhereJoin(column, referencesTable, foreignKeyColumn));
+        DatabaseResponse response = Database.executeQuery(request);
+
+        return instantiateCollectionWithRelation(response.getResultList());
     }
 
     /*
      * Returns the number of entities. 
      */
     public Long count() {
-        String sql = queryFormatter.count();
-        DatabaseResponse response = Database.executeQuery(sql, null, null);
+        DatabaseRequest request = new DatabaseRequest();
+        request.setSql(queryFormatter.count());
+        DatabaseResponse response = Database.executeQuery(request);
+
+        return (long)response.getResultList().getFirst().get("count");
+    }
+
+    /*
+     * Returns the number of entities. 
+     */
+    public Long countWhereJoin(String column, Object value, String referencesTable, String foreignKeyColumn) {
+        DatabaseRequest request = new DatabaseRequest();
+        request.setProperty(column, value);
+        request.setSql(queryFormatter.countWhereJoin(column, referencesTable, foreignKeyColumn));
+        DatabaseResponse response = Database.executeQuery(request);
         return (long)response.getResultList().getFirst().get("count");
     }
 
@@ -136,9 +173,11 @@ public abstract class CrudRepository<T> {
      * specified primary key. 
      */
     public void delete(String column, Object primaryKey) throws Exception {
-        Map<String, Object> properties = QueryFormatter.property(column, primaryKey);
-        String sql = queryFormatter.delete();
-        DatabaseResponse response = Database.executeUpdate(sql, properties, null);
+        DatabaseRequest request = new DatabaseRequest();
+        request.setProperty(column, primaryKey);
+        request.setSql(queryFormatter.delete());
+        DatabaseResponse response = Database.executeUpdate(request);
+
         if (response.error()) throw new Exception(response.getMessage());
     }
 
@@ -154,8 +193,9 @@ public abstract class CrudRepository<T> {
      * Returns the last entity created.
      */
     public T last() {
-        String sql = queryFormatter.last();
-        DatabaseResponse response = Database.executeQuery(sql, null, null);
+        DatabaseRequest request = new DatabaseRequest();
+        request.setSql(queryFormatter.last());
+        DatabaseResponse response = Database.executeQuery(request);
         if (response.getResultList() != null && !response.getResultList().isEmpty())
             return instantiate(response.getResultList().getFirst());
         else

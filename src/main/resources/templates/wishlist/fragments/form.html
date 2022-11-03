@@ -2,7 +2,7 @@
      xmlns:th="http://www.thymeleaf.org"
      class="card">
 
-    <form action="#" th:action="@{/wishlists}" th:object="${wishlist}" th:method="${method}" class="form-control">
+    <form th:action="@{/wishlists}" th:object="${wishlist}" th:method="${method}" class="form-control">
         <input type="hidden" name="userId" th:value="${wishlist.getUserId() != 0 ? wishlist.getUserId() : userId}" />
         <input type="hidden" name="id" th:value="${wishlist.getId()}" />
         

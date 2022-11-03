@@ -61,7 +61,9 @@ public class Database {
     /*
      * Map (not excluded) properties to a prepared statement.
      */
-    private static void setStatementValues(PreparedStatement statement, Map<String, Object> properties, List<String> exclude) throws SQLException {
+    private static void setPreparedStatementValues(PreparedStatement statement, DatabaseRequest request) throws SQLException {
+        List<String> exclude = request.getExclude();
+        Map<String, Object> properties = request.getProperties();
         if (exclude == null) 
             exclude = new LinkedList<String>();
 
@@ -82,13 +84,14 @@ public class Database {
      * and the optional exclude parameter.
      * Returns a LinkedList with a Map Collection with the result.
      */
-    public static DatabaseResponse executeUpdate(String sql, Map<String, Object> properties, List<String> exclude) {
+    public static DatabaseResponse executeUpdate(DatabaseRequest databaseRequest) {
         DatabaseResponse response = new DatabaseResponse(); 
 
         try {
             Connection connection = createConnection();
+            String sql = databaseRequest.getSql();
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            setStatementValues(preparedStatement, properties, exclude);
+            setPreparedStatementValues(preparedStatement, databaseRequest);
             preparedStatement.executeUpdate();
             preparedStatement.close();
             System.out.println(preparedStatement);
@@ -106,13 +109,14 @@ public class Database {
      * and the optional exclude parameter.
      * Returns a LinkedList with a Map Collection with the result.
      */
-    public static DatabaseResponse executeQuery(String sql, Map<String, Object> properties, List<String> exclude) {
+    public static DatabaseResponse executeQuery(DatabaseRequest databaseRequest) {
         DatabaseResponse response = new DatabaseResponse(); 
 
         try {
             Connection connection = createConnection();
+            String sql = databaseRequest.getSql();
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            setStatementValues(preparedStatement, properties, exclude);
+            setPreparedStatementValues(preparedStatement, databaseRequest);
             ResultSet resultSet = preparedStatement.executeQuery();
             LinkedList<Map<String, Object>> resultList = parseResultSet(resultSet);
             response.setResultList(resultList);
