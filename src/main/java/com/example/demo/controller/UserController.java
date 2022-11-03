@@ -63,9 +63,9 @@ public class UserController {
 
 	@PatchMapping("/users")
 	public String update(Model model, User user, RedirectAttributes redirectAttributes) {
-		if (CustomUserDetails.notAllowed(user.getId()))
-			return "redirect:/users";
-
+		if (user.notAuthorizeExisting())
+			return "redirect:/";
+		
 		try {
 			user.encodePassword();
 			userRepository.update(user);
@@ -78,9 +78,9 @@ public class UserController {
 	
 	@DeleteMapping("/users")
 	public String delete(Model model, User user, RedirectAttributes redirectAttributes) {
-		if (CustomUserDetails.notAllowed(user.getId()))
-			return "redirect:/users";
-
+		if (user.notAuthorizeExisting())
+			return "redirect:/";
+		
 		try {
 			userRepository.delete("id", user.getId());
 		} catch (Exception e) {

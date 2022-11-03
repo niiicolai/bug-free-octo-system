@@ -9,22 +9,41 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+/*
+ * The CustomUserDetails class defines 
+ * the authorized user entity.
+ */
 public class CustomUserDetails implements UserDetails {
 
+    /*
+     * A prefix that should be inserted before a role
+     * to ensure  methods such as hasRole(role) 
+     * works in the front end.
+     */
+    private static final String PREFIX_F = "ROLE_%s"; 
+
+    /*
+     * Id
+     */
     protected long id;
 
+    /*
+     * Credentials
+     */
     private String email;
-
     private String password;
 
+    /*
+     * User states
+     */
     private Boolean enabled;
-
     private Boolean accountNonExpired;
-
     private Boolean accountNonLocked;
-
     private Boolean credentialsNonExpired;
 
+    /*
+     * User constructor
+     */
     public CustomUserDetails(
         long id, 
         String email, 
@@ -43,66 +62,104 @@ public class CustomUserDetails implements UserDetails {
         this.credentialsNonExpired = credentialsNonExpired;
     }
 
+    /*
+     * Returns the user's id.
+     */
     public long getId() {
         return id;
     }
 
+    /*
+     * Returns the user's email.
+     */
     public String getEmail() {
         return email;
     }
 
+    /*
+     * Returns the user's roles/authorities.
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         ArrayList<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
-        list.add(new SimpleGrantedAuthority("ROLE_USER"));
+        String role = String.format(PREFIX_F, SecurityConfiguration.AUTHORIZED_ROLE);
+        list.add(new SimpleGrantedAuthority(role));
         return list;
     }
 
+    /*
+     * Returns the password used to authenticated
+     * the user.
+     */
     @Override
     public String getPassword() {
         return password;
     }
 
+    /*
+     * Returns the name used to authenticated
+     * the user.
+     */
     @Override
     public String getUsername() {
         return email;
     }
 
+    /*
+     * Is the user's account not expired?
+     * 
+     * true = not expired
+     * false = expired
+     */
     @Override
     public boolean isAccountNonExpired() {
         return accountNonExpired;
     }
 
+    /*
+     * Is the user's account not locked?
+     * 
+     * true = unlocked
+     * false = locked
+     */
     @Override
     public boolean isAccountNonLocked() {
         return accountNonLocked;
     }
 
+    /*
+     * Is the user's credentials not expired?
+     * 
+     * true = not expired
+     * false = expired
+     */
     @Override
     public boolean isCredentialsNonExpired() {
         return credentialsNonExpired;
     }
 
+    /*
+     * Is the user's credentials not expired?
+     * 
+     * true = enabled
+     * false = disabled
+     */
     @Override
     public boolean isEnabled() {
         return enabled;
     }
 
-    public static boolean notAllowed(long userId) {
+    /*
+     * Returns the current authenticated user.
+     */
+    public static CustomUserDetails AuthenticatedUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Object principal = auth.getPrincipal();
 
         if (principal instanceof CustomUserDetails) {
-            CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
-            
-            boolean notAllowed = (user.id != userId);
-            if (notAllowed) {
-                System.out.println("AUTHENTICATION: NOT ALLOWED");
-            }
-
-            return notAllowed;
+            return (CustomUserDetails) principal;
         }
 
-        return true;
+        return null;
     }
 }

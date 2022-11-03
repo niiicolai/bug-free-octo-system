@@ -13,7 +13,7 @@
                 <a th:href="@{/wishlist-shares/{uuid}(uuid=${wishlistShare.getUuid()})}" class="btn btn-outline-primary btn-sm">Show Wishlist</a>
             </div>
 
-            <div th:replace="wish/fragments/form.html :: form(@{/wishlist-shares/{uuid}/wish/{id}(uuid=${wishlistShare.getUuid()}, id=${wish.getId()})}, 'patch', false)"></div>
+            <div th:replace="wish_reserver/fragments/form.html :: form(${wishlistShare.getUuid()}, ${wish.getId()}, ${wishReserver})"></div>
         </div>
     </body>
 </html>

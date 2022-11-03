@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,7 @@ import com.example.demo.repository.WishlistRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.WishRepository;
 import com.example.demo.config.CustomUserDetails;
+import com.example.demo.model.Wish;
 import com.example.demo.model.Wishlist;
 
 @Controller
@@ -39,15 +42,18 @@ public class WishlistController {
 
 	@GetMapping("/wishlists/{id}")
 	public String show(Model model, @PathVariable("id") long id) {
-		boolean cannotEdit = blockModifyingOthers(id);
-		if (cannotEdit)
+		Wishlist wishlist = wishlistRepository.findOne(id);
+		List<Wish> wishes = (List<Wish>) wishRepository.findWhereJoin("wishlist_id", id, "wish_reservers", "wish_id");
+		double reservedCount = wishRepository.countWhereJoin("wishlist_id", id, "wish_reservers", "wish_id");
+
+		if (wishlist.notAuthorizeExisting(wishlistRepository))
 			return "redirect:/users";
 		
-		Wishlist wishlist = wishlistRepository.findOne(id);
-		model.addAttribute("canEdit", !cannotEdit);	
+		model.addAttribute("canEdit", true);	
 		model.addAttribute("wishlist", wishlist);
 		model.addAttribute("wishlistShare", wishlistShareRepository.findOne(id));
-		model.addAttribute("wishes", wishRepository.findWhere("wishlist_id", id));
+		model.addAttribute("wishes", wishes);
+		model.addAttribute("reservePercent", (int)(reservedCount/wishes.size()*100));
 		model.addAttribute("user", userRepository.findOne(wishlist.getUserId()));
 		return "wishlist/show";
 	}
@@ -61,21 +67,23 @@ public class WishlistController {
 
 	@GetMapping("/wishlists/{id}/edit")
 	public String edit(Model model, @PathVariable("id") long id) {
-		if (blockModifyingOthers(id))
+		Wishlist wishlist = wishlistRepository.findOne(id);
+
+		if (wishlist.notAuthorizeExisting(wishlistRepository))
 			return "redirect:/users";
 
-		model.addAttribute("wishlist", wishlistRepository.findOne(id));
+		model.addAttribute("wishlist", wishlist);
 		return "wishlist/edit";
 	}
 
 	@PostMapping("/wishlists")
 	public String create(Model model, Wishlist wishlist, RedirectAttributes redirectAttributes) {
-		if (blockTransferingOthers(wishlist.getUserId()))
-			return "redirect:/users";
-
+		if (wishlist.notAuthorizeNew())
+			return "redirect:/";
+		
 		try {
 			wishlist = wishlistRepository.insert(wishlist);
-			return "redirect:wishlists/" + wishlist.getId();
+			return String.format("redirect:wishlists/%d", wishlist.getId());
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getMessage());
 			return "redirect:wishlists/new";
@@ -84,22 +92,22 @@ public class WishlistController {
 
 	@PatchMapping("/wishlists")
 	public String update(Model model, Wishlist wishlist, RedirectAttributes redirectAttributes) {
-		if (blockModifyingOthers(wishlist.getId()) || blockTransferingOthers(wishlist.getUserId()))
-			return "redirect:/users";
+		if (wishlist.notAuthorizeExisting(wishlistRepository))
+			return "redirect:/";
 		
 		try {
 			wishlistRepository.update(wishlist);
-			return "redirect:wishlists/" + wishlist.getId();
+			return String.format("redirect:wishlists/%d", wishlist.getId());
 		} catch (Exception e) {
 			redirectAttributes.addAttribute("error", e.getMessage());
-			return "redirect:wishlists/" + wishlist.getId() + "/edit";
+			return String.format("redirect:wishlists/%d/edit", wishlist.getId());
 		}		
 	}
 	
 	@DeleteMapping("/wishlists")
 	public String delete(Model model, Wishlist wishlist, RedirectAttributes redirectAttributes) {
-		if (blockModifyingOthers(wishlist.getId()))
-			return "redirect:/users";
+		if (wishlist.notAuthorizeExisting(wishlistRepository))
+			return "redirect:/";
 		
 		try {
 			wishlistRepository.delete("id", wishlist.getId());
@@ -108,14 +116,5 @@ public class WishlistController {
 		}
 
 		return "redirect:/users";
-	}
-
-	private boolean blockModifyingOthers(long wishlistId) {
-		Wishlist wishlist = wishlistRepository.findOne(wishlistId);
-		return blockTransferingOthers(wishlist.getUserId());
-	}
-
-	private boolean blockTransferingOthers(long userId) {
-		return CustomUserDetails.notAllowed(userId);
 	}
 }

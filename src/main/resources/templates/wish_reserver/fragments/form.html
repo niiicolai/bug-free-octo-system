@@ -1,0 +1,24 @@
+<div th:fragment="form(uuid, wishId, wishReserver)" 
+     xmlns:th="http://www.thymeleaf.org"
+     class="card">
+     
+    <form th:action="@{/wish-reservers/{uuid}/wish/{wishId}(uuid=${uuid}, wishId=${wishId})}" 
+          th:object="${wishReserver}" 
+          th:method="post" 
+          class="form-control">
+
+        <input type="hidden" name="wishId" th:value="${wishId}" />
+
+        <div class="form-group mt-3">
+            <label name="fullname" class="form-label">Name of the buyer</label>
+            <input type="text" name="fullname" 
+                   class="form-control form-control-lg"
+                   placeholder="John Doe"
+                   autocomplete="off" />
+        </div>
+
+        <div class="d-grid mb-3">
+            <input type="submit" class="btn btn-success mt-3" value="Save" />
+        </div>
+    </form>
+</div>

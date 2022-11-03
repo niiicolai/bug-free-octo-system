@@ -35,4 +35,12 @@ public class DatabaseResponse {
     public boolean error() {
         return responseCode == ResponseCode.ERROR;
     }
+
+    public Map<String, Object> getFirstResult()
+    {
+        if (resultList != null && !resultList.isEmpty())
+            return resultList.getFirst();
+        else
+            return null;
+    }
 }

@@ -3,6 +3,7 @@ package com.example.demo.repository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -37,7 +38,9 @@ public class UserRepository extends CrudRepository<User> {
         User user = instantiate();
         long id = ((Number)result.get("id")).longValue();
         user.setId(id);
+        user.setFullname((String)result.get("fullname"));
         user.setEmail((String)result.get("email"));
+        user.setCreatedAt((LocalDateTime)result.get("created_at"));
         return user;
     }
 
@@ -55,6 +58,11 @@ public class UserRepository extends CrudRepository<User> {
         return collection;
     }
 
+    @Override
+    protected Iterable<User> instantiateCollectionWithRelation(LinkedList<Map<String, Object>> resultList) {
+        return new LinkedList<User>();
+    }
+
     /*
      * Returns a user's properties as a Map collection.
      */
@@ -62,6 +70,7 @@ public class UserRepository extends CrudRepository<User> {
     protected Map<String, Object> properties(User entity) {
         HashMap<String, Object> collection = new HashMap<String, Object>();
         collection.put("id", entity.getId());
+        collection.put("fullname", entity.getFullname());
         collection.put("email", entity.getEmail());
         collection.put("password", entity.getPassword());
         return collection; 

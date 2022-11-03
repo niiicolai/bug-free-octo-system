@@ -3,10 +3,12 @@ package com.example.demo.repository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 import com.example.demo.model.Wish;
+import com.example.demo.model.WishReserver;
 import com.example.demo.repository.CustomImplementation.CrudRepository;
 
 @Repository
@@ -38,7 +40,7 @@ public class WishRepository extends CrudRepository<Wish> {
         wish.setId(((Number)result.get("id")).longValue());
         wish.setContent((String)result.get("content"));
         wish.setWishlistId(((Number)result.get("wishlist_id")).longValue());
-        wish.setReservedBy((String)result.get("reserved_by"));
+        wish.setCreatedAt((LocalDateTime)result.get("created_at"));
         return wish;
     }
 
@@ -56,6 +58,24 @@ public class WishRepository extends CrudRepository<Wish> {
         return collection;
     }
 
+    @Override
+    protected Iterable<Wish> instantiateCollectionWithRelation(LinkedList<Map<String, Object>> resultList) {
+        LinkedList<Wish> collection = new LinkedList<Wish>();
+        if (resultList == null)
+            return collection;
+            
+        for (var result : resultList) {
+            Wish wish = instantiate(result);
+            WishReserver reserver = WishReserverRepository.create(result);
+
+            if (reserver.getWishId() != 0)
+                wish.setWishReserver(reserver);
+
+            collection.add(wish);
+        }
+        return collection;
+    }
+
     /*
      * Returns a wish's properties as a Map collection.
      */
@@ -65,7 +85,6 @@ public class WishRepository extends CrudRepository<Wish> {
         collection.put("id", entity.getId());
         collection.put("content", entity.getContent());
         collection.put("wishlist_id", entity.getWishlistId());
-        collection.put("reserved_by", entity.getReservedBy());
         return collection; 
     }
 }
